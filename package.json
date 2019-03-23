@@ -12,17 +12,24 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    
     "@expo/samples": "2.1.1",
     "expo": "^32.0.0",
     "firebase": "^5.9.1",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
-    "react-navigation": "^3.0.9"
+    "react-navigation": "^3.0.9",
+    "lottie-react-native": "2.5.11"
   },
   "devDependencies": {
+    
     "babel-preset-expo": "^5.0.0",
     "jest-expo": "^32.0.0",
     "prettier": "^1.16.4"
+  },
+  "optionalDependencies": {
+    "@expo/traveling-fastlane-darwin": "git+https://github.com/troveapp/fake-fastlane.git#darwin",
+    "@expo/traveling-fastlane-linux": "git+https://github.com/troveapp/fake-fastlane.git#linux"
   },
   "private": true
 }
