@@ -1,9 +1,7 @@
 import React from "react";
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { WebBrowser } from "expo";
+import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { MonoText } from "../components/StyledText";
-import { loadUser } from "../util/FirebaseClient";
+import { loadUser } from "../../util/FirebaseClient";
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -12,16 +10,28 @@ export default class HomeScreen extends React.Component {
 
   state = {};
 
+  async componentDidMount() {
+    const user = await loadUser("anon-1");
+    console.log("Loaded user!");
+    console.log(user);
+    this.setState({
+      nickname: user.val().nickname,
+      age: user.val().age
+    });
+    console.log("Finished setting state");
+  }
+
   render() {
-    console.log('Called render!');
+    console.log("Called render!");
     console.log(this.state);
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            <Text>Resource</Text>
-            <Text>Did it work?</Text>
-            <Text>Notes</Text>
+            <Text>About you</Text>
+            <Text>Nickname: {this.state.nickname || ""}</Text>
+            <Text>Age: {this.state.age || ""}</Text>
+            <Text>Add activity</Text>
           </View>
         </ScrollView>
       </View>
