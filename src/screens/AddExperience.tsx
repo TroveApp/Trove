@@ -1,9 +1,5 @@
 import React from "react";
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { WebBrowser } from "expo";
-
-import { MonoText } from "../components/StyledText";
-import { loadUser } from "../../util/FirebaseClient";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -76,26 +72,6 @@ const styles = StyleSheet.create({
     color: "rgba(96,100,109, 1)",
     lineHeight: 24,
     textAlign: "center"
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
   },
   tabBarInfoText: {
     fontSize: 17,

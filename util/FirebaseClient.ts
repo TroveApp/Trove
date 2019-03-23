@@ -10,19 +10,22 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-export function writeUser(user) {
-  firebase
-    .database()
-    .ref(`users/${user.id}`)
-    .set({
-      nickname: "anon123",
-      age: 29
-    });
+export interface User {
+  nickname: string;
+  age: number;
 }
 
-export function loadUser(userId) {
-  return firebase
+export function writeUser(userId: string, user: User) {
+  firebase
     .database()
     .ref(`users/${userId}`)
-    .once('value');
+    .set(user);
+}
+
+export async function loadUser(userId: string): Promise<User> {
+  const data = await firebase
+    .database()
+    .ref(`users/${userId}`)
+    .once("value");
+  return data.val();
 }

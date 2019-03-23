@@ -7,7 +7,7 @@
     "isolatedModules": true,
     "typeRoots": ["node_modules/@types"],
     "jsx": "react-native",
-    "lib": ["dom", "es2017"],
+    "lib": ["es2017"],
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "noImplicitAny": true,

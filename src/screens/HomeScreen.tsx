@@ -1,22 +1,26 @@
 import React from "react";
-import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { loadUser } from "../../util/FirebaseClient";
 
-export default class HomeScreen extends React.Component {
+interface State {
+  nickname?: string;
+  age?: number;
+}
+
+export default class HomeScreen extends React.Component<{}, State> {
   static navigationOptions = {
     header: null
   };
 
-  state = {};
+  state: State = {};
 
   async componentDidMount() {
     const user = await loadUser("anon-1");
-    console.log("Loaded user!");
     console.log(user);
     this.setState({
-      nickname: user.val().nickname,
-      age: user.val().age
+      nickname: user.nickname,
+      age: user.age
     });
     console.log("Finished setting state");
   }
@@ -86,26 +90,6 @@ const styles = StyleSheet.create({
     color: "rgba(96,100,109, 1)",
     lineHeight: 24,
     textAlign: "center"
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
   },
   tabBarInfoText: {
     fontSize: 17,
