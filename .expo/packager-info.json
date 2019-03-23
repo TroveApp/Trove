@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 35230,
-  "expoServerNgrokUrl": "https://wc-jsz.anonymous.trove.exp.direct",
-  "packagerNgrokUrl": "https://packager.wc-jsz.anonymous.trove.exp.direct",
-  "ngrokPid": 35257
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
