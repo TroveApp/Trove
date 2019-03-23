@@ -12,18 +12,6 @@ export default class HomeScreen extends React.Component {
 
   state = {};
 
-  async componentDidMount() {
-    const user = await loadUser("anon-1");
-    console.log('Loaded user!');
-    console.log(user);
-    console.log(user.nickname);
-    this.setState({
-      nickname: user.val().nickname,
-      age: user.val().age
-    });
-    console.log('Finished setting state');
-  }
-
   render() {
     console.log('Called render!');
     console.log(this.state);
@@ -31,10 +19,9 @@ export default class HomeScreen extends React.Component {
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            <Text>About you</Text>
-            <Text>Nickname: {this.state.nickname || ""}</Text>
-            <Text>Age: {this.state.age || ""}</Text>
-            <Text>Add activity</Text>
+            <Text>Resource</Text>
+            <Text>Did it work?</Text>
+            <Text>Notes</Text>
           </View>
         </ScrollView>
       </View>
