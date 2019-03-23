@@ -1,14 +1,15 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
 
 import { loadUser } from "../../util/FirebaseClient";
+import {NavigationScreenProps} from "react-navigation";
 
 interface State {
   nickname?: string;
   age?: number;
 }
 
-export default class HomeScreen extends React.Component<{}, State> {
+export default class HomeScreen extends React.Component<NavigationScreenProps, State> {
   static navigationOptions = {
     header: null
   };
@@ -35,7 +36,10 @@ export default class HomeScreen extends React.Component<{}, State> {
             <Text>About you</Text>
             <Text>Nickname: {this.state.nickname || ""}</Text>
             <Text>Age: {this.state.age || ""}</Text>
-            <Text>Add activity</Text>
+            <Button
+              title="Add activity"
+              onPress={() => this.props.navigation.navigate('AddExperience')}
+            />
           </View>
         </ScrollView>
       </View>

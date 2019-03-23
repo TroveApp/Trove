@@ -9,7 +9,6 @@ export default class HomeScreen extends React.Component {
   state = {};
 
   render() {
-    console.log('Called render!');
     console.log(this.state);
     return (
       <View style={styles.container}>
