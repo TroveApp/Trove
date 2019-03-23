@@ -4,10 +4,29 @@ import { WebBrowser } from "expo";
 
 import { MonoText } from "../components/StyledText";
 
+import * as firebase from 'firebase';
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCixuF9r0M04ExKHr7xV4lxyP1eqmPh83w",
+  authDomain: "trove-backend.firebaseapp.com",
+  databaseURL: "https://trove-backend.firebaseio.com/",
+  storageBucket: "trove-backend.appspot.com"
+};
+
+firebase.initializeApp(firebaseConfig);
+
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
+
+  componentDidMount() {
+    firebase.database().ref('users/' + 'anon-1').set({
+      nickname: 'anon123',
+      age: 29,
+    });
+  }
 
   render() {
     return (
