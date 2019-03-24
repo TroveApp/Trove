@@ -1,27 +1,37 @@
 import React from "react";
-import {Button, Image, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {OnboardingState} from "../firebase/FirebaseUser";
 import {Operations} from "../redux/operations";
-import {Dispatcher} from "../redux/Store";
+import {Dispatcher, AppState} from "../redux/Store";
 import {connect} from "react-redux";
 import BubblePicker from "../components/BubblePicker";
 import NextButton from "../components/NextButton";
 import Colors from "../constants/Colors";
+import { withLoggedInUser } from '../redux/reducers/Self';
 
 export interface OwnProps extends NavigationScreenProps {}
 
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type StateProps = ReturnType<typeof mapStateToProps>;
+export interface Props extends OwnProps, StateProps, DispatchProps {}
 
-export interface Props extends OwnProps, DispatchProps {}
+const mapStateToProps = (state: AppState) => ({
+  topResources: withLoggedInUser(state.self, (self) => state.core.users[self.uid].topResources, () => { }),
+});
 
 function mapDispatchToProps(dispatch: Dispatcher, props: OwnProps) {
   return {
-    continueOnboarding() {
+    continueOnboarding(resourceIds: string[]) {
+      dispatch(Operations.saveTopResources(resourceIds));
+
       dispatch(Operations.updateOnboardingState(OnboardingState.Complete));
 
       props.navigation.navigate("Profile");
     },
+    setTopResources(resourceIds: string[]) {
+      dispatch(Operations.saveTopResources(resourceIds));
+    }
   };
 }
 
@@ -36,6 +46,15 @@ export class SelectInitialResourcesScreen extends React.Component<Props, State> 
 
   state: State = {
     selectedResources: [],
+  };
+
+  setTopResources = (resourceIds: string[]) => {
+    this.setState({selectedResources: resourceIds})
+    this.props.setTopResources(resourceIds);
+  }
+
+  continueOnboarding = () => {
+    this.props.continueOnboarding(this.state.selectedResources);
   };
 
   render() {
@@ -59,9 +78,9 @@ export class SelectInitialResourcesScreen extends React.Component<Props, State> 
                 {text: "Reading", id: "d3614d4b-ac2a-47fe-87aa-b5a968149170"},
               ]}
               selectedBubbles={this.state.selectedResources}
-              onChangeSelectedBubbles={selectedBubbles => this.setState({selectedResources: selectedBubbles})}
+              onChangeSelectedBubbles={this.setTopResources}
             />
-            <NextButton onPress={this.props.continueOnboarding} />
+            <NextButton onPress={this.continueOnboarding} />
           </View>
         </ScrollView>
       </View>
@@ -112,6 +131,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps,
 )(SelectInitialResourcesScreen);

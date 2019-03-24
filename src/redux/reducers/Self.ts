@@ -1,6 +1,7 @@
 import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
 import {produce} from "immer";
 import {FirebaseUser, OnboardingState} from "../../firebase/FirebaseUser";
+import { User } from './Core';
 
 export enum LoginState {
   Unknown,
@@ -10,6 +11,7 @@ export enum LoginState {
 
 export interface LoggedInSelf extends FirebaseUser {
   loginState: LoginState.LoggedIn;
+  myProfile: User,
 }
 
 export type LoggedOutSelf = {
@@ -66,3 +68,19 @@ export default (state = getInitialState(), action: SelfAction): Self =>
       }
     },
   );
+
+export const withLoggedInUser = <T>(
+  self: Self,
+  then: (loggedInSelf: LoggedInSelf) => T,
+  onFailure?: () => T,
+): T | undefined => {
+  if (self.loginState !== LoginState.LoggedIn) {
+    console.log("Required UID for action, did not find");
+    return onFailure && onFailure();
+  }
+  try {
+    return then(self);
+  } catch {
+    return onFailure && onFailure();
+  }
+};

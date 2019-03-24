@@ -1,8 +1,9 @@
 import {database, User} from "firebase";
 import {GetState, ReducerAction} from "../Store";
 import {Dispatch} from "redux";
-import {selfAction, LoginState} from "../reducers/Self";
+import {selfAction, withLoggedInUser} from "../reducers/Self";
 import {FirebaseUser, OnboardingState} from "../../firebase/FirebaseUser";
+import { FirebaseUserProfile } from '../../firebase/FirebaseUserProfile';
 
 export interface RegistrationAction {
   uid: string;
@@ -30,6 +31,20 @@ export function loginUser(user: User) {
             };
           },
         );
+
+        await database()
+        .ref(`userProfiles/${user.uid}`)
+        .transaction(
+          (currentValue: Partial<FirebaseUserProfile> | null): Partial<FirebaseUserProfile> => {
+            const {
+              topResources = [],
+            } = currentValue || {};
+
+            return {
+              topResources
+            }
+          }
+        )
     } catch (err) {
       console.log("ERROR! DANGER WILL ROBINSON");
       console.log(err);
@@ -40,10 +55,23 @@ export function loginUser(user: User) {
       .ref(`users/${user.uid}`)
       .once("value")).val();
 
+    const { topResources, ...restProfile }: FirebaseUserProfile = (await database()
+      .ref(`userProfiles/${user.uid}`)
+      .once("value")).val();
+
+    
+
     dispatch(
       selfAction.login({
         uid: user.uid,
         ...firebaseUser,
+        myProfile: {
+          // TODO:
+          ...restProfile,
+
+          experiences: [],
+          topResources: {},
+        },
       }),
     );
   };
@@ -51,21 +79,16 @@ export function loginUser(user: User) {
 
 export function updateOnboardingState(onboardingState: OnboardingState) {
   return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
-    const {self} = getState();
+    const appState = getState();
 
-    console.log('Attempting to update onboarding state, what is self?');
-    console.log(self);
+    withLoggedInUser(appState.self, async self => {
+      await database()
+        .ref(`users/${self.uid}`)
+        .update(<FirebaseUser>{
+          onboardingState,
+        });
 
-    if (self.loginState !== LoginState.LoggedIn) {
-      return;
-    }
-
-    await database()
-      .ref(`users/${self.uid}`)
-      .update(<FirebaseUser>{
-        onboardingState,
-      });
-
-    dispatch(selfAction.setOnboardingState(onboardingState));
+      dispatch(selfAction.setOnboardingState(onboardingState));
+    });
   };
 }

@@ -3,35 +3,54 @@ import {Image, ScrollView, Slider, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState, Dispatcher} from "../redux/Store";
-import {coreAction} from "../redux/reducers/Core";
+import {coreAction, Experience} from "../redux/reducers/Core";
 import Colors from "../constants/Colors";
 import NextButton from "../components/NextButton";
+import {LoginState} from "../redux/reducers/Self";
 
 interface State {
   howEmpowering: number;
 }
 
 function mapStateToProps(state: AppState) {
-  return state.core;
+  const {core, self} = state;
+  return {
+    core,
+    self,
+  };
 }
 
 const mapDispatchToProps = (dispatch: Dispatcher) => ({
-  onAddExperience: (resourceId: string, benefits: Array<string>, howEmpowering: number) => {
-    dispatch(coreAction.addExperience({resourceId, benefits, howEmpowering}));
+  onAddExperience: (uid: string) => (experience: Experience) => {
+    dispatch(coreAction.addExperience({uid, innerPayload: experience}));
   },
 });
+
+const mergeProps = (stateProps: StateProps, mapDispatchToProps: DispatchProps) => {
+  return {
+    ...stateProps,
+    onAddExperience: (resourceId: string, benefits: Array<string>, howEmpowering: number) => {
+      if (stateProps.self.loginState !== LoginState.LoggedIn) {
+        console.log("Illegal operation performed");
+        return;
+      }
+      return mapDispatchToProps.onAddExperience(stateProps.self.uid)({resourceId, benefits, howEmpowering});
+    },
+  };
+};
+
+export interface OwnProps {}
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type MergedProps = ReturnType<typeof mergeProps>;
+export interface Props extends NavigationScreenProps<PreviousState>, MergedProps, OwnProps {}
 
 interface PreviousState {
   resourceId: string;
   benefits: Array<string>;
 }
 
-class AddExperienceResourceScreen extends React.Component<
-  NavigationScreenProps<PreviousState> &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
-  State
-> {
+class AddExperienceResourceScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
   };

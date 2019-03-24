@@ -1,7 +1,6 @@
 import {payloadAction, ActionUnion, actionFactory} from "reductser";
 import {produce} from "immer";
 import {ImageRequireSource} from "react-native";
-import { useCallback } from 'react';
 
 export interface Resource {
   name: string;
@@ -14,8 +13,16 @@ export interface Experience {
   howEmpowering: number;
 }
 
+function getInitialUser(): User {
+  return {
+    nickname: null,
+    experiences: [],
+    topResources: {},
+  }
+}
+
 export interface User {
-  nickname: string;
+  nickname: string | null;
   experiences: Array<Experience>;
   topResources: {
     [resourceId: string]: Resource;
@@ -100,6 +107,10 @@ export default (state = getInitialState(), action: CoreAction): CoreState =>
           }
           case "setTopResources":{
             const { innerPayload: topResources, uid } = action.payload;
+            console.log(action.payload);
+            if (draft.users[uid] === undefined) {
+              draft.users[uid] = getInitialUser();
+            }
             draft.users[uid].topResources = topResources;
             break;
           }

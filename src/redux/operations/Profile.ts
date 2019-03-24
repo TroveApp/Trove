@@ -2,44 +2,39 @@ import {Resource, coreAction} from "../reducers/Core";
 import {ReducerAction, GetState} from "../Store";
 import {Dispatch} from "react";
 import {database} from "firebase";
-import {LoginState} from "../reducers/Self";
-import { FirebaseResource } from '../../firebase/FirebaseResource';
+import {withLoggedInUser} from "../reducers/Self";
+import {FirebaseResource} from "../../firebase/FirebaseResource";
 
-export function saveTopResources(topResources: string[]) {
+export function saveTopResources(resourceIds: string[]) {
   return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
-    const {self} = getState();
+    const appState = getState();
 
-    if (self.loginState !== LoginState.LoggedIn) {
-      console.log("Illegal action performed");
-      return;
-    }
+    await withLoggedInUser(appState.self, async ({uid}) => {
+      const resourceMap: Record<string, Resource> = {};
+      try {
+        await Promise.all(
+          resourceIds.map(rid =>
+            database()
+              .ref(`resources/${rid}`)
+              .once("value", snapshot => {
+                const {name} = snapshot.val() as FirebaseResource;
+                resourceMap[rid] = {
+                  name,
+                  imageURL: null,
+                };
+              }),
+          ),
+        );
 
-    const {uid} = self;
+        database()
+          .ref(`userProfiles/${uid}/topResources`)
+          .set(resourceIds);
+      } catch (err) {
+        console.log(err);
+        return;
+      }
 
-    const resourceMap: Record<string, Resource> = {};
-    try {
-      await Promise.all(
-        topResources.map(rid =>
-          database()
-            .ref(`resources/${rid}`)
-            .once("value", snapshot => {
-              const {name} = snapshot.val() as FirebaseResource;
-              resourceMap[rid] = {
-                name,
-                imageURL: null,
-              };
-            }),
-        ),
-      );
-
-      database()
-        .ref(`userProfiles/${uid}/topResources`)
-        .set(topResources);
-    } catch (err) {
-      console.log(err);
-      return;
-    }
-
-    dispatch(coreAction.setTopResources({uid, innerPayload: resourceMap}));
+      dispatch(coreAction.setTopResources({uid, innerPayload: resourceMap}));
+    });
   };
 }
