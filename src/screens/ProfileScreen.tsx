@@ -8,6 +8,18 @@ import {Experience, resolveResourceImageURL, Resource} from "../redux/reducers/C
 import Colors from "../constants/Colors";
 import {withLoggedInUser} from "../redux/reducers/Self";
 
+
+export const ExperienceCard = ({resource}: {resource: Resource}) => {
+  const resourceImageURL = resolveResourceImageURL(resource.name);
+  return (<View  style={styles.experienceCard}>
+    {resourceImageURL && <Image style={styles.experienceIcon} source={resourceImageURL} />}
+    <Text style={styles.experienceName}>{resource.name}</Text>
+    <Image style={styles.experienceArrow} source={require("../../assets/images/Arrow.png")} />
+  </View>);
+}
+
+
+
 interface State {
   nickname?: string;
   age?: number;
@@ -27,16 +39,6 @@ class ProfileScreen extends React.Component<
 
   state: State = {};
 
-  private renderExperienceCard(i: number, experience: Experience, resource: Resource) {
-    const resourceImageURL = resolveResourceImageURL(resource.name);
-    return (
-      <View key={i} style={styles.experienceCard}>
-        {resourceImageURL && <Image style={styles.experienceIcon} source={resourceImageURL} />}
-        <Text style={styles.experienceName}>{resource.name}</Text>
-        <Image style={styles.experienceArrow} source={require("../../assets/images/Arrow.png")} />
-      </View>
-    );
-  }
 
   private renderExperiences() {
     return withLoggedInUser(this.props.self, self => (
@@ -44,7 +46,7 @@ class ProfileScreen extends React.Component<
         {self.myProfile.experiences.map((experience, i) => {
           const resource = this.props.core.resources[experience.resourceId];
           if (resource) {
-            return this.renderExperienceCard(i, experience, resource);
+            return <ExperienceCard key={i} resource={resource} />;
           } else {
             console.log(`Resource not found! ${experience.resourceId}`);
             return null;

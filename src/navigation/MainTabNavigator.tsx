@@ -84,7 +84,7 @@ export default createBottomTabNavigator({
   ProfileStack,
   AddActivityStack,
   DiscoverStack,
-  DebugStack,
+  // DebugStack,
 }, {
   initialRouteName: "ProfileStack",
 });
