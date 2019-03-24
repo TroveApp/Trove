@@ -1,3 +1,4 @@
+import { Google } from "expo";
 import React from "react";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { NavigationScreenProps } from "react-navigation";
@@ -9,12 +10,22 @@ export default class SignUpScreen extends React.Component<NavigationScreenProps>
 
   state = {};
 
+  handleLogin = async () => {
+    const clientId = "883453373534-llcic14a27n6gqi289aqcq8a1no01fht.apps.googleusercontent.com";
+    const result = await Google.logInAsync({ clientId, scopes: ["profile", "email"] });
+    if (result.type === "success") {
+      /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
+      console.log(result.user);
+    }
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Text>Sign up</Text>
+            <Button title="Log in" onPress={this.handleLogin} />
             <Button title="Next" onPress={() => this.props.navigation.navigate("Welcome")} />
           </View>
         </ScrollView>
