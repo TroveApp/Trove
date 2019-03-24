@@ -1,10 +1,13 @@
 import React from "react";
-import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Button, Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {OnboardingState} from "../firebase/FirebaseUser";
 import {Operations} from "../redux/operations";
 import {Dispatcher} from "../redux/Store";
-import { connect } from 'react-redux';
+import {connect} from "react-redux";
+import BubblePicker from "../components/BubblePicker";
+import NextButton from "../components/NextButton";
+import Colors from "../constants/Colors";
 
 export interface OwnProps extends NavigationScreenProps {}
 
@@ -22,20 +25,43 @@ function mapDispatchToProps(dispatch: Dispatcher, props: OwnProps) {
   };
 }
 
-export class SelectInitialResourcesScreen extends React.Component<Props> {
+interface State {
+  selectedResources: Array<string>;
+}
+
+export class SelectInitialResourcesScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
   };
 
-  state = {};
+  state: State = {
+    selectedResources: [],
+  };
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Text>Select initial resources</Text>
-            <Button title="Next" onPress={this.props.continueOnboarding} />
+          <Image style={styles.journeyImage} source={require("../../assets/images/CreateJourney-3.png")} />
+          <View style={styles.selectInitialResourcesContainer}>
+            <Text style={styles.titleText}>Have any of the following helped you in your journey?</Text>
+            <Text style={styles.subtitleText}>Select all that apply</Text>
+            <BubblePicker
+              bubbles={[
+                {text: "Therapy", id: "therapy"},
+                {text: "Meditation", id: "meditation"},
+                {text: "Journaling", id: "journaling"},
+                {text: "Fitness", id: "fitness"},
+                {text: "Yoga", id: "yoga"},
+                {text: "Acupuncture", id: "acupuncture"},
+                {text: "Massage", id: "massage"},
+                {text: "Medication", id: "medication"},
+                {text: "Reading", id: "reading"},
+              ]}
+              selectedBubbles={this.state.selectedResources}
+              onChangeSelectedBubbles={selectedBubbles => this.setState({selectedResources: selectedBubbles})}
+            />
+            <NextButton onPress={this.props.continueOnboarding} />
           </View>
         </ScrollView>
       </View>
@@ -55,61 +81,37 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
   },
+  journeyImage: {
+    height: 180,
+    width: "100%",
+    resizeMode: "contain",
+  },
   contentContainer: {
     paddingTop: 30,
   },
-  welcomeContainer: {
+  selectInitialResourcesContainer: {
     alignItems: "center",
     marginTop: 10,
     marginBottom: 20,
   },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10,
+  titleText: {
+    fontSize: 24,
+    fontFamily: "montserrat-medium",
+    color: Colors.nearBlack,
+    alignSelf: "flex-start",
+    marginLeft: 20,
   },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)",
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center",
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center",
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center",
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7",
+  subtitleText: {
+    margin: 8,
+    marginLeft: 20,
+    alignSelf: "flex-start",
+    fontSize: 16,
+    fontFamily: "montserrat-regular",
+    color: Colors.gray,
   },
 });
 
-export default connect(undefined, mapDispatchToProps)(SelectInitialResourcesScreen);
+export default connect(
+  undefined,
+  mapDispatchToProps,
+)(SelectInitialResourcesScreen);
