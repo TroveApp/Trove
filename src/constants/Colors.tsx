@@ -11,6 +11,7 @@ export default {
   warningText: "#666804",
   noticeBackground: tintColor,
   noticeText: "#fff",
+  red: "rgb(243, 116, 102)",
   green: "rgb(88, 199, 160)",
   blue: "rgb(77, 201, 255)",
   nearBlack: "rgb(53, 52, 61)",

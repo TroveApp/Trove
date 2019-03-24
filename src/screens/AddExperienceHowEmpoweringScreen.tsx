@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Image, ScrollView, Slider, StyleSheet, Text, View} from "react-native";
+import {Image, ScrollView, Slider, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState, Dispatcher} from "../redux/Store";
