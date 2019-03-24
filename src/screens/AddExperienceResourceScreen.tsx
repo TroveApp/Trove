@@ -1,46 +1,31 @@
 import React from "react";
-import {Button, Picker, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
+import {Button, Picker, ScrollView, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
-import {AppState, Dispatcher} from "../redux/Store";
-import {coreAction} from "../redux/reducers/Core";
+import {AppState} from "../redux/Store";
 
 interface State {
   resourceId: string | null;
-  rating: string;
-  notes: string;
 }
 
 function mapStateToProps(state: AppState) {
   return state.core;
 }
 
-const mapDispatchToProps = (dispatch: Dispatcher) => ({
-  onAddExperience: (resourceId: string, rating: string, notes: string) => {
-    dispatch(coreAction.addExperience({resourceId, rating, notes}));
-  },
-});
-
-const INITIAL_STATE: State = {
-  resourceId: "therapy",
-  rating: "",
-  notes: "",
-};
-
-class AddExperienceScreen extends React.Component<
-  NavigationScreenProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+class AddExperienceResourceScreen extends React.Component<
+  NavigationScreenProps & ReturnType<typeof mapStateToProps>,
   State
 > {
   static navigationOptions = {
     header: null,
   };
 
-  state = INITIAL_STATE;
+  state = {
+    resourceId: "therapy",
+  };
 
   handleDone = () => {
-    this.props.onAddExperience(this.state.resourceId!, this.state.rating, this.state.notes);
-    this.setState(INITIAL_STATE);
-    this.props.navigation.navigate("Profile");
+    this.props.navigation.navigate("AddExperienceBenefits", {resourceId: this.state.resourceId});
   };
 
   render() {
@@ -48,7 +33,7 @@ class AddExperienceScreen extends React.Component<
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            <Text>Resource</Text>
+            <Text>What's helped so far?</Text>
             <Picker
               selectedValue={this.state.resourceId}
               style={{height: 50, width: 200}}
@@ -58,17 +43,9 @@ class AddExperienceScreen extends React.Component<
                 <Picker.Item key={resourceId} label={resource.name} value={resourceId} />
               ))}
             </Picker>
-            <Text style={{marginTop: 200}}>Did it work?</Text>
-            <TextInput
-              style={{height: 50, width: 200, backgroundColor: "#fff"}}
-              onChangeText={rating => this.setState({rating})}
-            />
-            <Text>Notes</Text>
-            <TextInput
-              style={{height: 50, width: 200, backgroundColor: "#fff"}}
-              onChangeText={notes => this.setState({notes})}
-            />
-            <Button title="Done" onPress={this.handleDone} />
+            <View style={{marginTop: 200}}>
+              <Button title="Done" onPress={this.handleDone} />
+            </View>
           </View>
         </ScrollView>
       </View>
@@ -145,7 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddExperienceScreen);
+export default connect(mapStateToProps)(AddExperienceResourceScreen);

@@ -1,21 +1,17 @@
 import React from "react";
 import {Image, Platform, Text} from "react-native";
-import {createStackNavigator, createBottomTabNavigator} from "react-navigation";
+import {createStackNavigator, createBottomTabNavigator, createSwitchNavigator} from "react-navigation";
 
 import Colors from "../constants/Colors";
 import TabBarIcon from "../components/TabBarIcon";
 import ProfileScreen from "../screens/ProfileScreen";
 import DiscoverScreen from "../screens/DiscoverScreen";
-import AddExperienceScreen from "../screens/AddExperienceScreen";
 import DebugScreen from "../screens/DebugScreen";
+import AddExperienceResourceScreen from "../screens/AddExperienceResourceScreen";
+import AddExperienceBenefitsScreen from "../screens/AddExperienceBenefitsScreen";
+import AddExperienceHowEmpoweringScreen from "../screens/AddExperienceHowEmpoweringScreen";
 
-const ProfileStack = createStackNavigator(
-  {
-    Profile: ProfileScreen,
-    AddExperience: AddExperienceScreen,
-  },
-  {initialRouteName: "Profile"},
-);
+const ProfileStack = createStackNavigator({Profile: ProfileScreen});
 
 ProfileStack.navigationOptions = {
   tabBarLabel: ({focused}: {focused: boolean}) => (
@@ -35,8 +31,10 @@ ProfileStack.navigationOptions = {
     ),
 };
 
-const AddActivityStack = createStackNavigator({
-  AddExperience: AddExperienceScreen,
+const AddActivityStack = createSwitchNavigator({
+  AddExperienceResource: AddExperienceResourceScreen,
+  AddExperienceBenefits: AddExperienceBenefitsScreen,
+  AddExperienceHowEmpowering: AddExperienceHowEmpoweringScreen,
 });
 
 AddActivityStack.navigationOptions = {

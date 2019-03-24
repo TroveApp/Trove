@@ -10,8 +10,8 @@ export interface Resource {
 
 export interface Experience {
   resourceId: string;
-  rating: string;
-  notes: string;
+  benefits: Array<string>;
+  howEmpowering: number;
 }
 
 export interface User {
