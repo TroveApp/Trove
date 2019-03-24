@@ -5,7 +5,7 @@ import {idForResource} from "../../firebase/FirebaseResource";
 
 export interface Resource {
   name: string;
-  imageURL: ImageRequireSource | null;
+  imageSlug: string | null;
 }
 
 export interface Experience {
@@ -42,6 +42,17 @@ export type CoreState = {
     [resourceId: string]: Resource;
   };
 };
+
+export function resolveResourceImageURL(name: string): ImageRequireSource | null {
+  if (name === "Therapy") {
+    return require("../../../assets/images/Therapy.png");
+  } else if (name === "Meditation") {
+    return require("../../../assets/images/Meditation.png");
+  } else if (name === 'Painting') {
+    return require("../../../assets/images/Painting.png");
+  }
+  return null;
+}
 
 // Hack until we store the current user in a better way.
 export const CURRENT_USER_ID = "currentUser";

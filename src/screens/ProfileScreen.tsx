@@ -4,7 +4,7 @@ import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState} from "../redux/Store";
-import {CURRENT_USER_ID, Experience, Resource} from "../redux/reducers/Core";
+import {CURRENT_USER_ID, Experience, resolveResourceImageURL, Resource} from "../redux/reducers/Core";
 import Colors from "../constants/Colors";
 
 interface State {
@@ -27,9 +27,10 @@ class ProfileScreen extends React.Component<
   state: State = {};
 
   private renderExperienceCard(i: number, experience: Experience, resource: Resource) {
+    const resourceImageURL = resolveResourceImageURL(resource.name);
     return (
       <View key={i} style={styles.experienceCard}>
-        {resource.imageURL && <Image style={styles.experienceIcon} source={resource.imageURL} />}
+        {resourceImageURL && <Image style={styles.experienceIcon} source={resourceImageURL} />}
         <Text style={styles.experienceName}>{resource.name}</Text>
         <Image style={styles.experienceArrow} source={require("../../assets/images/Arrow.png")} />
       </View>
