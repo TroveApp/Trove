@@ -41,7 +41,11 @@ class ProfileScreen extends React.Component<
       <View style={styles.experiences}>
         {this.props.core.users[CURRENT_USER_ID].experiences.map((experience, i) => {
           const resource = this.props.core.resources[experience.resourceId];
-          return this.renderExperienceCard(i, experience, resource);
+          if (resource) {
+            return this.renderExperienceCard(i, experience, resource);
+          } else {
+            console.log(`Resource not found! ${experience.resourceId}`);
+          }
         })}
       </View>
     );

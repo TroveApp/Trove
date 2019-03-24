@@ -1,6 +1,7 @@
 import {payloadAction, ActionUnion, actionFactory} from "reductser";
 import {produce} from "immer";
 import {ImageRequireSource} from "react-native";
+import {idForResource} from "../../firebase/FirebaseResource";
 
 export interface Resource {
   name: string;
@@ -18,7 +19,7 @@ function getInitialUser(): User {
     nickname: null,
     experiences: [],
     topResources: {},
-  }
+  };
 }
 
 export interface User {
@@ -50,7 +51,7 @@ function getInitialState(): CoreState {
     users: {
       currentUser: {
         nickname: "",
-        experiences: [{resourceId: "therapy", rating: "Medium-effective", notes: ""}],
+        experiences: [{resourceId: idForResource("Therapy")}],
         topResources: {},
       },
     },
@@ -88,6 +89,9 @@ export const coreAction = actionFactory(
   {
     addExperience: payloadAction<WithUid<Experience>>(),
     setTopResources: payloadAction<WithUid<Record<string, Resource>>>(),
+    hydrateResources: payloadAction<{
+      [resourceId: string]: Resource;
+    }>(),
   },
   "users",
 );
@@ -101,17 +105,22 @@ export default (state = getInitialState(), action: CoreAction): CoreState =>
       if (action.reducer === "users") {
         switch (action.type) {
           case "addExperience": {
-            const { innerPayload: experience, uid } = action.payload;
+            const {innerPayload: experience, uid} = action.payload;
             draft.users[uid].experiences.push(experience);
             break;
           }
-          case "setTopResources":{
-            const { innerPayload: topResources, uid } = action.payload;
+          case "setTopResources": {
+            const {innerPayload: topResources, uid} = action.payload;
             console.log(action.payload);
             if (draft.users[uid] === undefined) {
               draft.users[uid] = getInitialUser();
             }
             draft.users[uid].topResources = topResources;
+            break;
+          }
+          case "hydrateResources": {
+            const resources = action.payload;
+            draft.resources = resources;
             break;
           }
           default:

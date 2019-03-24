@@ -10,6 +10,7 @@ import AppNavigator from "./navigation/AppNavigator";
 import {Operations} from "./redux/operations";
 import {selfAction} from "./redux/reducers/Self";
 import {globalDispatch, store} from "./redux/Store";
+import {coreAction} from "./redux/reducers/Core";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCixuF9r0M04ExKHr7xV4lxyP1eqmPh83w",
@@ -44,6 +45,12 @@ export default class App extends React.Component<AppProps> {
       }
 
       globalDispatch(Operations.loginUser(user));
+
+      const resources = (await firebase
+        .database()
+        .ref("resources")
+        .once("value")).toJSON();
+      globalDispatch(coreAction.hydrateResources(resources));
     });
   }
 

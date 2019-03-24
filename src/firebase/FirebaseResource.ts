@@ -161,8 +161,12 @@ export const RESOURCE_CONSTANTS = {
   },
   "b65b2007-a38b-467c-8c89-ffe9df9eb2a8": {name: "Advocacy"},
   "37d9c9d6-8d9e-4e4e-8ee8-e87d8b553d09": {name: "Sharing my story"},
-  "43107345-d3e3-43c5-8782-cbcb7cd6dc7d": {name: "Therapy" },
-  "5073bee9-b689-41fe-9be1-e25b6eb2be79": {name: "Meditation" },
-  "eb46d033-e983-4226-bcde-e4783da21660": {name: "Fitness" },
-  "57cc11e5-2572-48aa-aee1-00fc41b42d38": {name: "Massage" },
+  "43107345-d3e3-43c5-8782-cbcb7cd6dc7d": {name: "Therapy"},
+  "5073bee9-b689-41fe-9be1-e25b6eb2be79": {name: "Meditation"},
+  "eb46d033-e983-4226-bcde-e4783da21660": {name: "Fitness"},
+  "57cc11e5-2572-48aa-aee1-00fc41b42d38": {name: "Massage"},
 };
+
+export function idForResource(resourceName: string) {
+  return Object.entries(RESOURCE_CONSTANTS).filter(([id, resource]) => resource.name === resourceName)[0][0];
+}
