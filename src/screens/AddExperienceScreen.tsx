@@ -5,8 +5,6 @@ import { connect } from "react-redux";
 import { AppState, Dispatcher } from "../redux/Store";
 import { coreAction } from "../redux/reducers/Core";
 
-interface HomeScreenProps {}
-
 interface State {
   resourceId: string | null;
   rating: string;
@@ -23,26 +21,26 @@ const mapDispatchToProps = (dispatch: Dispatcher) => ({
   }
 });
 
+const INITIAL_STATE: State = {
+  resourceId: "therapy",
+  rating: "",
+  notes: ""
+};
+
 class AddExperienceScreen extends React.Component<
-  NavigationScreenProps &
-    HomeScreenProps &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>,
+  NavigationScreenProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   State
 > {
   static navigationOptions = {
     header: null
   };
 
-  state = {
-    resourceId: null,
-    rating: "",
-    notes: ""
-  };
+  state = INITIAL_STATE;
 
   handleDone = () => {
     this.props.onAddExperience(this.state.resourceId!, this.state.rating, this.state.notes);
-    this.props.navigation.pop();
+    this.setState(INITIAL_STATE);
+    this.props.navigation.navigate("Profile");
   };
 
   render() {
@@ -57,7 +55,7 @@ class AddExperienceScreen extends React.Component<
               onValueChange={itemValue => this.setState({ resourceId: itemValue })}
             >
               {Object.entries(this.props.resources).map(([resourceId, resource]) => (
-                <Picker.Item label={resource.name} value={resourceId} />
+                <Picker.Item key={resourceId} label={resource.name} value={resourceId} />
               ))}
             </Picker>
             <Text style={{ marginTop: 200 }}>Did it work?</Text>

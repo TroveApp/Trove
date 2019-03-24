@@ -1,11 +1,10 @@
 import React from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { loadUser } from "../../util/FirebaseClient";
 import { NavigationScreenProps } from "react-navigation";
 import { connect } from "react-redux";
 import { AppState } from "../redux/Store";
-import { CURRENT_USER_ID } from "../redux/reducers/Core";
 
 interface State {
   nickname?: string;
@@ -16,50 +15,22 @@ function mapStateToProps(state: AppState) {
   return state;
 }
 
-class HomeScreen extends React.Component<NavigationScreenProps & ReturnType<typeof mapStateToProps>, State> {
+class DiscoverScreen extends React.Component<
+  NavigationScreenProps & ReturnType<typeof mapStateToProps>,
+  State
+> {
   static navigationOptions = {
     header: null
   };
 
   state: State = {};
 
-  async componentDidMount() {
-    const user = await loadUser("anon-1");
-    console.log(user);
-    this.setState({
-      nickname: user.nickname,
-      age: user.age
-    });
-    console.log("Finished setting state");
-  }
-
-  private renderExperiences() {
-    return (
-      <View>
-        {this.props.core.users[CURRENT_USER_ID].experiences.map(experience => {
-          const resource = this.props.core.resources[experience.resourceId];
-          return (
-            <View>
-              <Text>{resource.name}</Text>
-              <Text>{experience.rating}</Text>
-              <Text>{experience.notes}</Text>
-            </View>
-          );
-        })}
-      </View>
-    );
-  }
-
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            <Text>About you</Text>
-            <Text>Nickname: {this.state.nickname || ""}</Text>
-            <Text>Age: {this.state.age || ""}</Text>
-            {this.renderExperiences()}
-            <Button title="Add experience" onPress={() => this.props.navigation.navigate("AddExperience")} />
+            <Text>Discover</Text>
           </View>
         </ScrollView>
       </View>
@@ -136,4 +107,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps)(HomeScreen);
+export default connect(mapStateToProps)(DiscoverScreen);

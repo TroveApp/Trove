@@ -3,22 +3,21 @@ import { Platform } from "react-native";
 import { createStackNavigator, createBottomTabNavigator } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
-import LinksScreen from "../screens/LinksScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import DiscoverScreen from "../screens/DiscoverScreen";
 import AddExperienceScreen from "../screens/AddExperienceScreen";
 import DebugScreen from "../screens/DebugScreen";
 
-const HomeStack = createStackNavigator(
+const ProfileStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Profile: ProfileScreen,
     AddExperience: AddExperienceScreen
   },
-  { initialRouteName: "Home" }
+  { initialRouteName: "Profile" }
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
+ProfileStack.navigationOptions = {
+  tabBarLabel: "Profile",
   tabBarIcon: ({ focused }: { focused: boolean }) => (
     <TabBarIcon
       focused={focused}
@@ -29,23 +28,24 @@ HomeStack.navigationOptions = {
   )
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen
+const AddActivityStack = createStackNavigator({
+  AddExperience: AddExperienceScreen
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: "Links",
+AddActivityStack.navigationOptions = {
+  tabBarLabel: " ",
   tabBarIcon: ({ focused }: { focused: boolean }) => (
     <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-link" : "md-link"} />
-  )
+  ),
+  tabBarVisible: false
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen
+const DiscoverStack = createStackNavigator({
+  Discover: DiscoverScreen
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: "Settings",
+DiscoverStack.navigationOptions = {
+  tabBarLabel: "Discover",
   tabBarIcon: ({ focused }: { focused: boolean }) => (
     <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-options" : "md-options"} />
   )
@@ -63,8 +63,8 @@ DebugStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
+  ProfileStack,
+  AddActivityStack,
+  DiscoverStack,
   DebugStack
 });
