@@ -1,10 +1,10 @@
-import { simpleAction, payloadAction, ActionUnion, actionFactory } from "reductser";
-import { Action } from "redux";
-import { produce } from "immer";
+import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
+import {Action} from "redux";
+import {produce} from "immer";
 
 export enum LoginState {
   LoggedOut,
-  LoggedIn
+  LoggedIn,
 }
 
 export interface LoggedInSelf {
@@ -22,15 +22,15 @@ export type Self = LoggedInSelf | LoggedOutSelf;
 
 function getInitialState(): Self {
   return {
-    loginState: LoginState.LoggedOut
+    loginState: LoginState.LoggedOut,
   };
 }
 
 export const selfAction = actionFactory(
   {
-    login: payloadAction<LoggedInSelf>()
+    login: payloadAction<LoggedInSelf>(),
   },
-  "self"
+  "self",
 );
 
 export type SelfAction = ActionUnion<typeof selfAction>;
@@ -43,11 +43,11 @@ export default (state = getInitialState(), action: SelfAction): Self =>
         switch (action.type) {
           case "login":
             return {
-              ...action.payload
+              ...action.payload,
             };
           default:
             return;
         }
       }
-    }
+    },
   );

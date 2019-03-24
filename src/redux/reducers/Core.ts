@@ -1,6 +1,6 @@
-import { simpleAction, payloadAction, ActionUnion, actionFactory } from "reductser";
-import { Action } from "redux";
-import { produce } from "immer";
+import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
+import {Action} from "redux";
+import {produce} from "immer";
 
 export interface Resource {
   name: string;
@@ -38,28 +38,28 @@ function getInitialState(): CoreState {
     users: {
       currentUser: {
         nickname: "",
-        experiences: [{ resourceId: "therapy", rating: "Medium-effective", notes: "" }]
-      }
+        experiences: [{resourceId: "therapy", rating: "Medium-effective", notes: ""}],
+      },
     },
     resources: {
       therapy: {
-        name: "Therapy"
+        name: "Therapy",
       },
       medication: {
-        name: "Medication"
+        name: "Medication",
       },
       sleep: {
-        name: "Sleep techniques"
-      }
-    }
+        name: "Sleep techniques",
+      },
+    },
   };
 }
 
 export const coreAction = actionFactory(
   {
-    addExperience: payloadAction<Experience>()
+    addExperience: payloadAction<Experience>(),
   },
-  "users"
+  "users",
 );
 
 export type CoreAction = ActionUnion<typeof coreAction>;
@@ -77,13 +77,13 @@ export default (state = getInitialState(), action: CoreAction): CoreState =>
                 ...state.users,
                 [CURRENT_USER_ID]: {
                   ...state.users[CURRENT_USER_ID],
-                  experiences: [...state.users[CURRENT_USER_ID].experiences, action.payload]
-                }
-              }
+                  experiences: [...state.users[CURRENT_USER_ID].experiences, action.payload],
+                },
+              },
             };
           default:
             return;
         }
       }
-    }
+    },
   );

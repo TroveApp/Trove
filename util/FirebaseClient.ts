@@ -5,7 +5,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCixuF9r0M04ExKHr7xV4lxyP1eqmPh83w",
   authDomain: "trove-backend.firebaseapp.com",
   databaseURL: "https://trove-backend.firebaseio.com/",
-  storageBucket: "trove-backend.appspot.com"
+  storageBucket: "trove-backend.appspot.com",
 };
 
 firebase.initializeApp(firebaseConfig);

@@ -1,7 +1,7 @@
-import { database } from "firebase";
-import { Action, GetState, ReducerAction } from "../Store";
-import { Dispatch } from "redux";
-import { selfAction, LoggedInSelf } from "../reducers/Self";
+import {database} from "firebase";
+import {Action, GetState, ReducerAction} from "../Store";
+import {Dispatch} from "redux";
+import {selfAction, LoggedInSelf} from "../reducers/Self";
 
 export interface RegistrationAction {
   userId: string;
@@ -9,14 +9,14 @@ export interface RegistrationAction {
   nickname: string;
 }
 
-export function registerUser({ userId, ...rest }: RegistrationAction) {
+export function registerUser({userId, ...rest}: RegistrationAction) {
   return async (dispatch: Dispatch<ReducerAction>, _getState: GetState) => {
-    console.log({ userId, ...rest });
+    console.log({userId, ...rest});
 
     await database()
       .ref(`users/${userId}`)
       .set({
-        ...rest
+        ...rest,
       });
 
     const user: LoggedInSelf = (await database()
@@ -25,8 +25,8 @@ export function registerUser({ userId, ...rest }: RegistrationAction) {
 
     dispatch(
       selfAction.login({
-        ...user
-      })
+        ...user,
+      }),
     );
   };
 }
