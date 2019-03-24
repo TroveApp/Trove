@@ -1,7 +1,7 @@
-import { database } from "firebase";
-import { Action, GetState, ReducerAction } from "../Store";
-import { Dispatch } from "redux";
-import { selfAction, LoggedInSelf } from "../reducers/Self";
+import {database} from "firebase";
+import {GetState, ReducerAction} from "../Store";
+import {Dispatch} from "redux";
+import {selfAction, LoggedInSelf} from "../reducers/Self";
 
 export interface RegistrationAction {
   uid: string;
@@ -30,8 +30,8 @@ export function loginUser({ uid, ...rest }: RegistrationAction) {
 
     dispatch(
       selfAction.login({
-        ...user
-      })
+        ...user,
+      }),
     );
   };
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { createStackNavigator } from "react-navigation";
+import {createStackNavigator} from "react-navigation";
 
 import SignUpScreen from "../screens/SignUpScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
@@ -9,9 +9,9 @@ const OnboardingStack = createStackNavigator(
   {
     SignUp: SignUpScreen,
     Welcome: WelcomeScreen,
-    SelectInitialResources: SelectInitialResourcesScreen
+    SelectInitialResources: SelectInitialResourcesScreen,
   },
-  { initialRouteName: "SignUp" }
+  {initialRouteName: "SignUp"},
 );
 
 export default OnboardingStack;

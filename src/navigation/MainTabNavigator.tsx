@@ -1,70 +1,88 @@
 import React from "react";
-import { Platform } from "react-native";
-import { createStackNavigator, createBottomTabNavigator } from "react-navigation";
+import {Image, Platform, Text} from "react-native";
+import {createStackNavigator, createBottomTabNavigator} from "react-navigation";
 
+import Colors from "../constants/Colors";
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
-import LinksScreen from "../screens/LinksScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import DiscoverScreen from "../screens/DiscoverScreen";
 import AddExperienceScreen from "../screens/AddExperienceScreen";
 import DebugScreen from "../screens/DebugScreen";
 
-const HomeStack = createStackNavigator(
+const ProfileStack = createStackNavigator(
   {
-    Home: HomeScreen,
-    AddExperience: AddExperienceScreen
+    Profile: ProfileScreen,
+    AddExperience: AddExperienceScreen,
   },
-  { initialRouteName: "Home" }
+  {initialRouteName: "Profile"},
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
-  tabBarIcon: ({ focused }: { focused: boolean }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === "ios" ? `ios-information-circle${focused ? "" : "-outline"}` : "md-information-circle"
-      }
-    />
-  )
+ProfileStack.navigationOptions = {
+  tabBarLabel: ({focused}: {focused: boolean}) => (
+    <Text style={{color: focused ? Colors.green : Colors.gray, fontSize: 12}}>PROFILE</Text>
+  ),
+  tabBarIcon: ({focused}: {focused: boolean}) =>
+    focused ? (
+      <Image
+        style={{marginTop: 4, width: 26, height: 26}}
+        source={require("../../assets/images/Profile_Selected.png")}
+      />
+    ) : (
+      <Image
+        style={{marginTop: 4, width: 26, height: 26}}
+        source={require("../../assets/images/Profile_Normal.png")}
+      />
+    ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen
+const AddActivityStack = createStackNavigator({
+  AddExperience: AddExperienceScreen,
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: "Links",
-  tabBarIcon: ({ focused }: { focused: boolean }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-link" : "md-link"} />
-  )
+AddActivityStack.navigationOptions = {
+  tabBarLabel: " ",
+  tabBarIcon: ({focused}: {focused: boolean}) => (
+    <Image style={{marginTop: 12, width: 36, height: 36}} source={require("../../assets/images/Add.png")} />
+  ),
+  tabBarVisible: false,
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen
+const DiscoverStack = createStackNavigator({
+  Discover: DiscoverScreen,
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: "Settings",
-  tabBarIcon: ({ focused }: { focused: boolean }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-options" : "md-options"} />
-  )
+DiscoverStack.navigationOptions = {
+  tabBarLabel: ({focused}: {focused: boolean}) => (
+    <Text style={{color: focused ? Colors.green : Colors.gray, fontSize: 12}}>DISCOVER</Text>
+  ),
+  tabBarIcon: ({focused}: {focused: boolean}) =>
+    focused ? (
+      <Image
+        style={{marginTop: 4, width: 26, height: 26}}
+        source={require("../../assets/images/Discover_Selected.png")}
+      />
+    ) : (
+      <Image
+        style={{marginTop: 4, width: 26, height: 26}}
+        source={require("../../assets/images/Discover_Normal.png")}
+      />
+    ),
 };
 
 const DebugStack = createStackNavigator({
-  Settings: DebugScreen
+  Settings: DebugScreen,
 });
 
 DebugStack.navigationOptions = {
   tabBarLabel: "Debug",
-  tabBarIcon: ({ focused }: { focused: boolean }) => (
+  tabBarIcon: ({focused}: {focused: boolean}) => (
     <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-bulb" : "md-bulb"} />
-  )
+  ),
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
-  DebugStack
+  ProfileStack,
+  AddActivityStack,
+  DiscoverStack,
+  DebugStack,
 });

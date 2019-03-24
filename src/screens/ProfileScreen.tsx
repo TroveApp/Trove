@@ -1,44 +1,69 @@
-import { Google } from "expo";
 import React from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
-import { NavigationScreenProps } from "react-navigation";
-import * as firebase from 'firebase';
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 
-const androidClientId = "407092306106-it03cc7c4u171mn1v5vhld04d6j3nt2u.apps.googleusercontent.com";
-const iosClientId = "407092306106-j9gisuljdh3jfj08ukno8k8igvblipvq.apps.googleusercontent.com";
+import {loadUser} from "../../util/FirebaseClient";
+import {NavigationScreenProps} from "react-navigation";
+import {connect} from "react-redux";
+import {AppState} from "../redux/Store";
+import {CURRENT_USER_ID} from "../redux/reducers/Core";
 
-export default class SignUpScreen extends React.Component<NavigationScreenProps> {
+interface State {
+  nickname?: string;
+  age?: number;
+}
+
+function mapStateToProps(state: AppState) {
+  return state;
+}
+
+class ProfileScreen extends React.Component<
+  NavigationScreenProps & ReturnType<typeof mapStateToProps>,
+  State
+> {
   static navigationOptions = {
     header: null,
   };
 
-  state = {};
+  state: State = {};
 
-  handleLogin = async () => {
-    const result = await Google.logInAsync({ androidClientId, iosClientId, scopes: ["profile", "email"] });
-    if (result.type === "success") {
-      /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
-      console.log(result.user);
-      
-      // Build Firebase credential with the Facebook access token.
-      const credential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
-
-      // Sign in with credential from the Facebook user.
-      firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
-        console.log('Experienced an auth error');
-        // Handle Errors here.
+  async componentDidMount() {
+    const user = await loadUser("anon-1");
+    console.log(user);
+    if (user) {
+      this.setState({
+        nickname: user.nickname,
+        age: user.age,
       });
     }
-  };
+    console.log("Finished setting state");
+  }
+
+  private renderExperiences() {
+    return (
+      <View>
+        {this.props.core.users[CURRENT_USER_ID].experiences.map((experience, i) => {
+          const resource = this.props.core.resources[experience.resourceId];
+          return (
+            <View key={i}>
+              <Text>{resource.name}</Text>
+              <Text>{experience.rating}</Text>
+              <Text>{experience.notes}</Text>
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            <Text>Sign up</Text>
-            <Button title="Log in" onPress={this.handleLogin} />
-            <Button title="Next" onPress={() => this.props.navigation.navigate("Welcome")} />
+            <Text>About you</Text>
+            <Text>Nickname: {this.state.nickname || ""}</Text>
+            <Text>Age: {this.state.age || ""}</Text>
+            {this.renderExperiences()}
           </View>
         </ScrollView>
       </View>
@@ -114,3 +139,5 @@ const styles = StyleSheet.create({
     color: "#2e78b7",
   },
 });
+
+export default connect(mapStateToProps)(ProfileScreen);
