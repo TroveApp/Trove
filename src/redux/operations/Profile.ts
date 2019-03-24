@@ -3,7 +3,7 @@ import {ReducerAction, GetState} from "../Store";
 import {Dispatch} from "react";
 import {database} from "firebase";
 import {LoginState} from "../reducers/Self";
-import {FirebaseResource} from "../../firebase/FirebaseResource";
+import { FirebaseResource } from '../../firebase/FirebaseResource';
 
 export function saveTopResources(topResources: string[]) {
   return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
@@ -23,7 +23,7 @@ export function saveTopResources(topResources: string[]) {
           database()
             .ref(`resources/${rid}`)
             .once("value", snapshot => {
-              const {name} = snapshot.val();
+              const {name} = snapshot.val() as FirebaseResource;
               resourceMap[rid] = {
                 name,
                 imageURL: null,
