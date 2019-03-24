@@ -35,6 +35,8 @@ const AddActivityStack = createSwitchNavigator({
   AddExperienceResource: AddExperienceResourceScreen,
   AddExperienceBenefits: AddExperienceBenefitsScreen,
   AddExperienceHowEmpowering: AddExperienceHowEmpoweringScreen,
+}, {
+  initialRouteName: "AddExperienceResource",
 });
 
 AddActivityStack.navigationOptions = {
@@ -83,4 +85,6 @@ export default createBottomTabNavigator({
   AddActivityStack,
   DiscoverStack,
   DebugStack,
+}, {
+  initialRouteName: "ProfileStack",
 });

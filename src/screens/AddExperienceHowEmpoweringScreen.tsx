@@ -1,9 +1,11 @@
 import React from "react";
-import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
-import {NavigationScreenProps, StackActions} from "react-navigation";
+import {Button, Image, ScrollView, Slider, StyleSheet, Text, View} from "react-native";
+import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState, Dispatcher} from "../redux/Store";
 import {coreAction} from "../redux/reducers/Core";
+import Colors from "../constants/Colors";
+import NextButton from "../components/NextButton";
 
 interface State {
   howEmpowering: number;
@@ -48,13 +50,36 @@ class AddExperienceResourceScreen extends React.Component<
     this.props.navigation.navigate("Profile");
   };
 
+  getSummaryMessage() {
+    if (this.state.howEmpowering < 0.2) {
+      return "Disempowering";
+    } else if (this.state.howEmpowering < 0.5) {
+      return "Not empowering";
+    } else if (this.state.howEmpowering < 0.8) {
+      return "Fairly empowering";
+    } else {
+      return "Very empowering";
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Text>How empowering</Text>
-            <Button title="Done" onPress={this.handleDone} />
+          <Image style={styles.journeyImage} source={require("../../assets/images/CreateJourney-3.png")} />
+          <View style={styles.howEmpoweringContainer}>
+            <Text style={styles.titleText}>How empowering was it?</Text>
+            <View style={styles.sliderContainer}>
+              <Slider
+                style={styles.slider}
+                minimumTrackTintColor={Colors.blue}
+                onValueChange={value => this.setState({howEmpowering: value})}
+                // Note this isn't controlled, this is just the initial value!
+                value={this.state.howEmpowering}
+              />
+              <Text style={styles.summaryText}>{this.getSummaryMessage()}</Text>
+            </View>
+            <NextButton onPress={this.handleDone} />
           </View>
         </ScrollView>
       </View>
@@ -65,69 +90,45 @@ class AddExperienceResourceScreen extends React.Component<
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eee",
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "center",
+    backgroundColor: "#fff",
   },
   contentContainer: {
     paddingTop: 30,
+    flexDirection: "column",
+    height: "100%",
   },
-  welcomeContainer: {
+  journeyImage: {
+    height: 180,
+    width: "100%",
+    resizeMode: "contain",
+  },
+  howEmpoweringContainer: {
+    flex: 1,
     alignItems: "center",
     marginTop: 10,
     marginBottom: 20,
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10,
+  titleText: {
+    fontSize: 24,
+    fontFamily: "montserrat-medium",
+    color: Colors.nearBlack,
   },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50,
+  sliderContainer: {
+    width: "100%",
+    marginBottom: 80,
   },
-  homeScreenFilename: {
-    marginVertical: 7,
+  slider: {
+    marginLeft: 20,
+    marginRight: 20,
   },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)",
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center",
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center",
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center",
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7",
+  summaryText: {
+    alignSelf: "flex-end",
+    marginRight: 20,
+    fontSize: 16,
+    color: Colors.gray,
+    fontFamily: "montserrat-regular",
   },
 });
 
