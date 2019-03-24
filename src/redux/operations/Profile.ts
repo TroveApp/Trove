@@ -4,7 +4,6 @@ import {Dispatch} from "react";
 import {database} from "firebase";
 import {withLoggedInUser, selfAction} from "../reducers/Self";
 import {FirebaseResource} from "../../firebase/FirebaseResource";
-import {FirebaseUserExperience} from "../../firebase/FirebaseUserExperience";
 
 export function addExperience(experience: Experience) {
   return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
@@ -12,18 +11,11 @@ export function addExperience(experience: Experience) {
 
     await withLoggedInUser(appState.self, async ({uid}) => {
       await database()
-        .ref(`userExperiences/${uid}`)
-        .transaction((currentValue: FirebaseUserExperience | null) => {
-          const {entries = {}} = currentValue || {};
-
-          return {
-            entries,
-          };
+        .ref(`userExperiences/entries`)
+        .push(<Experience>{
+          uid,
+          ...experience,
         });
-        
-      await database()
-        .ref(`userExperiences/${uid}/entries`)
-        .push(experience);
 
       dispatch(coreAction.addExperience({uid, innerPayload: experience}));
       dispatch(selfAction.addExperienceToProfile(experience));
