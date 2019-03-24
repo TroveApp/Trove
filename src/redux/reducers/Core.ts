@@ -1,9 +1,11 @@
 import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
 import {Action} from "redux";
 import {produce} from "immer";
+import {ImageRequireSource} from "react-native";
 
 export interface Resource {
   name: string;
+  imageURL: ImageRequireSource | null;
 }
 
 export interface Experience {
@@ -44,12 +46,15 @@ function getInitialState(): CoreState {
     resources: {
       therapy: {
         name: "Therapy",
+        imageURL: require("../../../assets/images/Therapy.png"),
       },
-      medication: {
-        name: "Medication",
+      meditation: {
+        name: "Meditation",
+        imageURL: require("../../../assets/images/Meditation.png"),
       },
       sleep: {
         name: "Sleep techniques",
+        imageURL: null,
       },
     },
   };

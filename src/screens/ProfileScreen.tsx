@@ -1,11 +1,11 @@
 import React from "react";
-import {ScrollView, StyleSheet, Text, View} from "react-native";
+import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 
-import {loadUser} from "../../util/FirebaseClient";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState} from "../redux/Store";
-import {CURRENT_USER_ID} from "../redux/reducers/Core";
+import {CURRENT_USER_ID, Experience, Resource} from "../redux/reducers/Core";
+import Colors from "../constants/Colors";
 
 interface State {
   nickname?: string;
@@ -26,30 +26,22 @@ class ProfileScreen extends React.Component<
 
   state: State = {};
 
-  async componentDidMount() {
-    const user = await loadUser("anon-1");
-    console.log(user);
-    if (user) {
-      this.setState({
-        nickname: user.nickname,
-        age: user.age,
-      });
-    }
-    console.log("Finished setting state");
+  private renderExperienceCard(i: number, experience: Experience, resource: Resource) {
+    return (
+      <View key={i} style={styles.experienceCard}>
+        {resource.imageURL && <Image style={styles.experienceIcon} source={resource.imageURL} />}
+        <Text style={styles.experienceName}>{resource.name}</Text>
+        <Image style={styles.experienceArrow} source={require("../../assets/images/Arrow.png")} />
+      </View>
+    );
   }
 
   private renderExperiences() {
     return (
-      <View>
+      <View style={styles.experiences}>
         {this.props.core.users[CURRENT_USER_ID].experiences.map((experience, i) => {
           const resource = this.props.core.resources[experience.resourceId];
-          return (
-            <View key={i}>
-              <Text>{resource.name}</Text>
-              <Text>{experience.rating}</Text>
-              <Text>{experience.notes}</Text>
-            </View>
-          );
+          return this.renderExperienceCard(i, experience, resource);
         })}
       </View>
     );
@@ -59,12 +51,12 @@ class ProfileScreen extends React.Component<
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Text>About you</Text>
-            <Text>Nickname: {this.state.nickname || ""}</Text>
-            <Text>Age: {this.state.age || ""}</Text>
-            {this.renderExperiences()}
+          <View style={styles.upperProfile}>
+            <Image style={styles.avatar} source={require("../../assets/images/Profile_Photo.png")} />
+            <Text style={styles.name}>Sailboat 5</Text>
+            <Text style={styles.location}>San Francisco, CA</Text>
           </View>
+          {this.renderExperiences()}
         </ScrollView>
       </View>
     );
@@ -75,6 +67,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    height: "100%",
   },
   developmentModeText: {
     marginBottom: 20,
@@ -85,58 +78,71 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: 30,
+    height: "100%",
   },
-  welcomeContainer: {
+  upperProfile: {
+    flexDirection: "column",
     alignItems: "center",
     marginTop: 10,
     marginBottom: 20,
   },
-  welcomeImage: {
+  avatar: {
     width: 100,
-    height: 80,
+    height: 100,
+  },
+  name: {
+    margin: 6,
+    marginTop: 12,
+    fontSize: 24,
+    fontFamily: "montserrat-regular",
+  },
+  location: {
+    margin: 6,
+    textTransform: "uppercase",
+    fontSize: 12,
+    color: Colors.gray,
+    fontFamily: "montserrat-medium",
+  },
+  experiences: {
+    borderTopColor: Colors.mediumGray,
+    borderTopWidth: 1,
+    backgroundColor: Colors.lightGray,
+    height: "100%",
+  },
+  experienceCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: Colors.white,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
+    padding: 10,
+    shadowRadius: 12,
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.1,
+  },
+  experienceIcon: {
+    width: 40,
+    height: 40,
     resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10,
+    flex: 1,
   },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)",
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center",
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center",
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center",
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
+  experienceName: {
     fontSize: 14,
-    color: "#2e78b7",
+    fontFamily: "montserrat-regular",
+    flex: 4,
+    paddingLeft: 20,
+  },
+  experienceArrow: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+    flex: 1,
   },
 });
 
