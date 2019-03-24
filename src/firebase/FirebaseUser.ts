@@ -1,6 +1,5 @@
 export enum OnboardingState {
   Complete = 'Complete',
-  AtWelcome = 'AtWelcome',
   AtSelectInitialResources = 'AtSelectInitialResources ',
 }
 

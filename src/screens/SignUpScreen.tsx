@@ -56,9 +56,6 @@ export class SignUpScreen extends React.Component<Props> {
     const {self} = this.props;
     if (self.loginState === LoginState.LoggedIn) {
       switch (self.onboardingState) {
-        case OnboardingState.AtWelcome:
-          this.props.navigation.navigate("Welcome");
-          break;
         case OnboardingState.AtSelectInitialResources:
           this.props.navigation.navigate("SelectInitialResources");
           break;

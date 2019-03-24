@@ -19,7 +19,7 @@ export function loginUser(user: User) {
         .transaction(
           (currentValue: Partial<FirebaseUser> | null): Partial<FirebaseUser> => {
             const {
-              onboardingState = OnboardingState.AtWelcome,
+              onboardingState = OnboardingState.AtSelectInitialResources,
               // TODO, SECURITY: validate on Firebase side that this email is okay,
               // this is untrusted client-side input.
               emailAddress = user.email || null,
