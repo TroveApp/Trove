@@ -10,8 +10,7 @@ const OnboardingStack = createStackNavigator(
     Welcome: WelcomeScreen,
     SelectInitialResources: SelectInitialResourcesScreen,
   },
-  // DON'T COMMIT
-  {initialRouteName: "SelectInitialResources"},
+  {initialRouteName: "SignUp"},
 );
 
 export default OnboardingStack;

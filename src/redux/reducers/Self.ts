@@ -1,7 +1,7 @@
 import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
 import {produce} from "immer";
 import {FirebaseUser, OnboardingState} from "../../firebase/FirebaseUser";
-import { User } from './Core';
+import {User, Experience} from "./Core";
 
 export enum LoginState {
   Unknown,
@@ -11,7 +11,7 @@ export enum LoginState {
 
 export interface LoggedInSelf extends FirebaseUser {
   loginState: LoginState.LoggedIn;
-  myProfile: User,
+  myProfile: User;
 }
 
 export type LoggedOutSelf = {
@@ -37,6 +37,7 @@ export const selfAction = actionFactory(
     logout: simpleAction(),
     login: payloadAction<LoginProps>(),
     setOnboardingState: payloadAction<OnboardingState>(),
+    addExperienceToProfile: payloadAction<Experience>(),
   },
   "self",
 );
@@ -58,6 +59,13 @@ export default (state = getInitialState(), action: SelfAction): Self =>
               loginState: LoginState.LoggedIn,
               ...action.payload,
             };
+          case "addExperienceToProfile": {
+            if (draft.loginState !== LoginState.LoggedIn) {
+              break;
+            }
+            draft.myProfile.experiences.push(action.payload);
+            break;
+          }
           case "setOnboardingState":
             if (draft.loginState !== LoginState.LoggedIn) {
               break;

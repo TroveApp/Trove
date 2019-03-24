@@ -57,9 +57,7 @@ export function loginUser(user: User) {
 
     const { topResources, ...restProfile }: FirebaseUserProfile = (await database()
       .ref(`userProfiles/${user.uid}`)
-      .once("value")).val();
-
-    
+      .once("value")).val() || {};
 
     dispatch(
       selfAction.login({
