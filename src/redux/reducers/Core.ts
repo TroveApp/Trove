@@ -105,7 +105,10 @@ export default (state = getInitialState(), action: CoreAction): CoreState =>
       if (action.reducer === "users") {
         switch (action.type) {
           case "addExperience": {
-            const {innerPayload: experience, uid} = action.payload;
+            const { innerPayload: experience, uid } = action.payload;
+            if (draft.users[uid] === undefined) {
+              draft.users[uid] = getInitialUser();
+            }
             draft.users[uid].experiences.push(experience);
             break;
           }

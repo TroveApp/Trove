@@ -3,10 +3,10 @@ import {Image, ScrollView, Slider, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState, Dispatcher} from "../redux/Store";
-import {coreAction, Experience} from "../redux/reducers/Core";
+import {Experience} from "../redux/reducers/Core";
 import Colors from "../constants/Colors";
 import NextButton from "../components/NextButton";
-import {LoginState} from "../redux/reducers/Self";
+import {Operations} from "../redux/operations";
 
 interface State {
   howEmpowering: number;
@@ -21,29 +21,15 @@ function mapStateToProps(state: AppState) {
 }
 
 const mapDispatchToProps = (dispatch: Dispatcher) => ({
-  onAddExperience: (uid: string) => (experience: Experience) => {
-    dispatch(coreAction.addExperience({uid, innerPayload: experience}));
+  onAddExperience(experience: Experience) {
+    dispatch(Operations.addExperience(experience));
   },
 });
-
-const mergeProps = (stateProps: StateProps, mapDispatchToProps: DispatchProps) => {
-  return {
-    ...stateProps,
-    onAddExperience: (resourceId: string, benefits: Array<string>, howEmpowering: number) => {
-      if (stateProps.self.loginState !== LoginState.LoggedIn) {
-        console.log("Illegal operation performed");
-        return;
-      }
-      return mapDispatchToProps.onAddExperience(stateProps.self.uid)({resourceId, benefits, howEmpowering});
-    },
-  };
-};
 
 export interface OwnProps {}
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type MergedProps = ReturnType<typeof mergeProps>;
-export interface Props extends NavigationScreenProps<PreviousState>, MergedProps, OwnProps {}
+export interface Props extends NavigationScreenProps<PreviousState>, StateProps, DispatchProps, OwnProps {}
 
 interface PreviousState {
   resourceId: string;
@@ -60,11 +46,14 @@ class AddExperienceResourceScreen extends React.Component<Props, State> {
   };
 
   handleDone = () => {
-    this.props.onAddExperience(
-      this.props.navigation.getParam("resourceId"),
-      this.props.navigation.getParam("benefits"),
-      this.state.howEmpowering,
-    );
+    const {howEmpowering} = this.state;
+
+    const experience: Experience = {
+      benefits: this.props.navigation.getParam("benefits"),
+      resourceId: this.props.navigation.getParam("resourceId"),
+      howEmpowering,
+    };
+    this.props.onAddExperience(experience);
     this.props.navigation.navigate("AddExperienceResource");
     this.props.navigation.navigate("Profile");
   };

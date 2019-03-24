@@ -34,6 +34,7 @@ class AddExperienceBenefitsScreen extends React.Component<
   handleDone = () => {
     this.props.navigation.navigate("AddExperienceHowEmpowering", {
       resourceId: this.props.navigation.getParam("resourceId"),
+      benefits: this.state.benefits,
     });
   };
 

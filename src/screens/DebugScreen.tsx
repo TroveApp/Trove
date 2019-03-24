@@ -1,9 +1,10 @@
 import React from "react";
 import {ScrollView, StyleSheet, Text, View} from "react-native";
 
-import {AppState} from "../redux/Store";
+import {AppState, Dispatcher} from "../redux/Store";
 import {connect} from "react-redux";
 import {LoginState} from "../redux/reducers/Self";
+import {Operations} from "../redux/operations";
 
 interface OwnState {
   nickname?: string;
@@ -13,12 +14,26 @@ interface OwnState {
 interface OwnProps {}
 
 type StateProps = ReturnType<typeof mapStateToProps>;
-
-interface Props extends OwnProps, StateProps {}
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+interface Props extends OwnProps, StateProps, DispatchProps {}
 
 function mapStateToProps(state: AppState) {
   return {
     loggedIn: state.self.loginState === LoginState.LoggedIn,
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatcher) {
+  return {
+    onMount() {
+      dispatch(
+        Operations.addExperience({
+          benefits: ["foo", "bar"],
+          howEmpowering: 5,
+          resourceId: "42",
+        }),
+      );
+    },
   };
 }
 
@@ -29,14 +44,17 @@ class DebugScreen extends React.Component<Props, OwnState> {
 
   state: OwnState = {};
 
+  componentDidMount() {
+    this.props.onMount();
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <Text>{`Current log in state is: ${this.props.loggedIn ? "Logged In" : "Logged Out"}`}</Text>
           <View style={styles.welcomeContainer}>
-            <View style={{backgroundColor: "#EEE", margin: 10, width: "100%"}}>
-            </View>
+            <View style={{backgroundColor: "#EEE", margin: 10, width: "100%"}} />
           </View>
         </ScrollView>
       </View>
@@ -113,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(DebugScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(DebugScreen);

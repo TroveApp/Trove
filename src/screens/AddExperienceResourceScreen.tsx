@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   textInputWrapper: {
+    elevation: 2,
     backgroundColor: Colors.white,
     shadowRadius: 12,
     shadowColor: Colors.black,
