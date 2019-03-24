@@ -1,3 +1,3 @@
 export interface FirebaseUserProfile {
-  topResources: Record<string, {}>;
+  topResources: string[];
 }

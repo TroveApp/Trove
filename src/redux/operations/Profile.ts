@@ -3,6 +3,7 @@ import {ReducerAction, GetState} from "../Store";
 import {Dispatch} from "react";
 import {database} from "firebase";
 import {LoginState} from "../reducers/Self";
+import {FirebaseResource} from "../../firebase/FirebaseResource";
 
 export function saveTopResources(topResources: string[]) {
   return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
@@ -15,13 +16,30 @@ export function saveTopResources(topResources: string[]) {
 
     const {uid} = self;
 
+    const resourceMap: Record<string, Resource> = {};
     try {
-      // Perform database action;
+      await Promise.all(
+        topResources.map(rid =>
+          database()
+            .ref(`resources/${rid}`)
+            .once("value", snapshot => {
+              const {name} = snapshot.val();
+              resourceMap[rid] = {
+                name,
+                imageURL: null,
+              };
+            }),
+        ),
+      );
+
+      database()
+        .ref(`userProfiles/${uid}/topResources`)
+        .set(topResources);
     } catch (err) {
       console.log(err);
+      return;
     }
 
-    // TODO
-    dispatch(coreAction.setTopResources({uid, innerPayload: {}}));
+    dispatch(coreAction.setTopResources({uid, innerPayload: resourceMap}));
   };
 }
