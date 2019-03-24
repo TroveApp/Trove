@@ -60,6 +60,14 @@ function getInitialState(): CoreState {
         name: "Sleep techniques",
         imageURL: null,
       },
+      yoga: {
+        name: "Yoga",
+        imageURL: null,
+      },
+      painting: {
+        name: "Painting",
+        imageURL: null,
+      },
     },
   };
 }
