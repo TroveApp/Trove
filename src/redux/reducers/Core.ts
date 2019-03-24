@@ -1,6 +1,7 @@
 import {payloadAction, ActionUnion, actionFactory} from "reductser";
 import {produce} from "immer";
 import {ImageRequireSource} from "react-native";
+import { useCallback } from 'react';
 
 export interface Resource {
   name: string;
@@ -16,6 +17,9 @@ export interface Experience {
 export interface User {
   nickname: string;
   experiences: Array<Experience>;
+  topResources: {
+    [resourceId: string]: Resource;
+  };
 }
 
 export interface Resource {
@@ -40,6 +44,7 @@ function getInitialState(): CoreState {
       currentUser: {
         nickname: "",
         experiences: [{resourceId: "therapy", rating: "Medium-effective", notes: ""}],
+        topResources: {},
       },
     },
     resources: {
@@ -59,9 +64,15 @@ function getInitialState(): CoreState {
   };
 }
 
+export interface WithUid<T> {
+  uid: string;
+  innerPayload: T;
+}
+
 export const coreAction = actionFactory(
   {
-    addExperience: payloadAction<Experience>(),
+    addExperience: payloadAction<WithUid<Experience>>(),
+    setTopResources: payloadAction<WithUid<Record<string, Resource>>>(),
   },
   "users",
 );
@@ -71,20 +82,19 @@ export type CoreAction = ActionUnion<typeof coreAction>;
 export default (state = getInitialState(), action: CoreAction): CoreState =>
   produce(
     state,
-    (_draft): CoreState | undefined => {
+    (draft): CoreState | undefined => {
       if (action.reducer === "users") {
         switch (action.type) {
-          case "addExperience":
-            return {
-              ...state,
-              users: {
-                ...state.users,
-                [CURRENT_USER_ID]: {
-                  ...state.users[CURRENT_USER_ID],
-                  experiences: [...state.users[CURRENT_USER_ID].experiences, action.payload],
-                },
-              },
-            };
+          case "addExperience": {
+            const { innerPayload: experience, uid } = action.payload;
+            draft.users[uid].experiences.push(experience);
+            break;
+          }
+          case "setTopResources":{
+            const { innerPayload: topResources, uid } = action.payload;
+            draft.users[uid].topResources = topResources;
+            break;
+          }
           default:
             return;
         }
