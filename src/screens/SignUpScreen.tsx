@@ -14,7 +14,13 @@ const androidClientId = "407092306106-it03cc7c4u171mn1v5vhld04d6j3nt2u.apps.goog
 const iosClientId = "407092306106-j9gisuljdh3jfj08ukno8k8igvblipvq.apps.googleusercontent.com";
 
 const GrayText = ({style, children, ...props}: NativeBase.Text & {children?: ReactNode}) => (
-  <Text style={[style, {color: "rgb(95, 93, 112)"}]} {...props}>
+  <Text style={[style, {color: "rgb(95, 93, 112)", fontFamily: "montserrat-regular"}]} {...props}>
+    {children}
+  </Text>
+);
+
+const GrayBoldText = ({style, children, ...props}: NativeBase.Text & {children?: ReactNode}) => (
+  <Text style={[style, {color: "rgb(95, 93, 112)", fontFamily: "montserrat-semibold"}]} {...props}>
     {children}
   </Text>
 );
@@ -105,7 +111,7 @@ export class SignUpScreen extends React.Component<Props> {
             </GrayText>
           </Button>
         </View>
-        <View style={{flex: 12, alignItems: "center", justifyContent: "center"}}>
+        <View style={{flex: 12, alignItems: "center", justifyContent: "center", marginTop: 20}}>
           <GrayText>
             Trove is an anonymous community. We need login information to confirm you’re a real person.
             However, within the community you will not be identified by name or identifiable info.{" "}
@@ -113,9 +119,9 @@ export class SignUpScreen extends React.Component<Props> {
         </View>
         <View style={{flex: 18, alignItems: "center", justifyContent: "center"}}>
           <GrayText style={{margin: 5}}>Not a member yet?</GrayText>
-          <GrayText style={{fontWeight: "900", margin: 5}} onPress={this.handleLogin}>
+          <GrayBoldText style={{fontWeight: "900", margin: 5}} onPress={this.handleLogin}>
             Sign Up
-          </GrayText>
+          </GrayBoldText>
         </View>
       </>
     );
@@ -136,7 +142,10 @@ export class SignUpScreen extends React.Component<Props> {
             <GrayText>&nbsp;</GrayText>
           </View>
           <View style={{flex: 30, alignItems: "center", justifyContent: "center"}}>
-            <Image style={{width: 104, height: 104}} source={require("../../assets/images/Trove-tan.png")} />
+            <Image
+              style={{width: 104, height: 104}}
+              source={require("../../assets/images/logo-trove-white-4x.png")}
+            />
           </View>
           <View style={{flex: 35}}>{showLoginFlow && this.renderLoginFlow()}</View>
         </LinearGradient>
