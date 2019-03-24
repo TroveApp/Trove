@@ -4,7 +4,7 @@ import {Dispatch} from "react";
 import {database} from "firebase";
 import {LoginState} from "../reducers/Self";
 
-export function saveTopResources(topResources: Record<string, Resource>) {
+export function saveTopResources(topResources: string[]) {
   return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
     const {self} = getState();
 
@@ -21,6 +21,7 @@ export function saveTopResources(topResources: Record<string, Resource>) {
       console.log(err);
     }
 
-    dispatch(coreAction.setTopResources({uid, innerPayload: topResources}));
+    // TODO
+    dispatch(coreAction.setTopResources({uid, innerPayload: {}}));
   };
 }
