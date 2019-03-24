@@ -9,9 +9,9 @@ export enum LoginState {
 
 export interface LoggedInSelf {
   loginState: LoginState.LoggedIn;
-  userId: string;
-  emailAddress: string;
-  nickname: string;
+  uid: string;
+  emailAddress: string | null;
+  nickname: string | null;
 }
 
 export type LoggedOutSelf = {
@@ -28,7 +28,8 @@ function getInitialState(): Self {
 
 export const selfAction = actionFactory(
   {
-    login: payloadAction<LoggedInSelf>()
+    logout: simpleAction(),
+    login: payloadAction<{ uid: string, emailAddress: string | null, nickname: string | null }>()
   },
   "self"
 );
@@ -41,8 +42,13 @@ export default (state = getInitialState(), action: SelfAction): Self =>
     (draft): Self | undefined => {
       if (action.reducer === "self") {
         switch (action.type) {
+          case "logout":
+            return {
+              loginState: LoginState.LoggedOut
+            };
           case "login":
             return {
+              loginState: LoginState.LoggedIn,
               ...action.payload
             };
           default:

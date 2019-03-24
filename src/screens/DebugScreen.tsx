@@ -21,7 +21,7 @@ interface Props extends OwnProps, StateProps {};
 
 function mapStateToProps(state: AppState) {
   return {
-    ...state,
+    loggedIn: state.self.loginState === LoginState.LoggedIn,
   };
 }
 
@@ -32,23 +32,11 @@ class DebugScreen extends React.Component<Props, OwnState> {
 
   state: OwnState = {};
 
-  async componentDidMount() {
-    const user = await loadUser("anon-1");
-    console.log(user);
-    this.setState({
-      nickname: user.nickname,
-      age: user.age
-    });
-    console.log("Finished setting state");
-  }
-
   render() {
-    console.log("Called render!");
-    console.log(this.state);
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <Text>{`Current log in state is: ${this.props.self.loginState === LoginState.LoggedIn ? "Logged In" : "Logged Out"}`}</Text>
+          <Text>{`Current log in state is: ${this.props.loggedIn ? "Logged In" : "Logged Out"}`}</Text>
           <View style={styles.welcomeContainer}>
             <View style={{ backgroundColor: "#EEE", margin: 10, width: "100%" }}>
               <SignupForm />

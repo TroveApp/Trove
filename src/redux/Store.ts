@@ -19,3 +19,6 @@ export type Dispatcher = Dispatch<Action>;
 export type Store = ReturnType<typeof configureStore>;
 export type GetState = Store['getState'];
 export type AppState = ReturnType<GetState>;
+
+export const store = configureStore();
+export const globalDispatch: Dispatcher = store.dispatch as Dispatcher;

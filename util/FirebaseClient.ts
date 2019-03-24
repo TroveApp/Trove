@@ -1,4 +1,7 @@
 import * as firebase from "firebase";
+import { store, globalDispatch } from '../src/redux/Store';
+import { selfAction } from '../src/redux/reducers/Self';
+import { Operations } from '../src/redux/operations';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -9,6 +12,19 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (user === null) {
+    globalDispatch(selfAction.logout());
+    return;
+  }
+
+  globalDispatch(Operations.loginUser({
+    uid: user.uid,
+    emailAddress: user.email,
+    nickname: null,
+  }));
+});
 
 export interface User {
   nickname: string;

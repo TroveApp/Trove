@@ -3,7 +3,7 @@ import { Platform, StatusBar, StyleSheet, View } from "react-native";
 // @ts-ignore: Expo types are old and don't have icon.
 import { AppLoading, Asset, Font, Icon } from "expo";
 import AppNavigator from "./navigation/AppNavigator";
-import configureStore from './redux/Store';
+import configureStore, { store } from './redux/Store';
 import { Provider } from 'react-redux';
 
 declare global {
@@ -13,8 +13,6 @@ declare global {
 interface AppProps {
   skipLoadingScreen: boolean;
 }
-
-const store = configureStore();
 
 export default class App extends React.Component<AppProps> {
   state = {
@@ -33,7 +31,6 @@ export default class App extends React.Component<AppProps> {
     } else {
       return (
         <Provider store={store}>
-
           <View style={styles.container}>
             {Platform.OS === "ios" && <StatusBar barStyle="default" />}
             <AppNavigator />

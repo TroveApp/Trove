@@ -27,8 +27,6 @@ export default class HomeScreen extends React.Component<NavigationScreenProps, S
   }
 
   render() {
-    console.log("Called render!");
-    console.log(this.state);
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>

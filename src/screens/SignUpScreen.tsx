@@ -2,6 +2,10 @@ import { Google } from "expo";
 import React from "react";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { NavigationScreenProps } from "react-navigation";
+import * as firebase from 'firebase';
+
+const androidClientId = "407092306106-it03cc7c4u171mn1v5vhld04d6j3nt2u.apps.googleusercontent.com";
+const iosClientId = "407092306106-j9gisuljdh3jfj08ukno8k8igvblipvq.apps.googleusercontent.com";
 
 export default class SignUpScreen extends React.Component<NavigationScreenProps> {
   static navigationOptions = {
@@ -11,11 +15,19 @@ export default class SignUpScreen extends React.Component<NavigationScreenProps>
   state = {};
 
   handleLogin = async () => {
-    const clientId = "883453373534-llcic14a27n6gqi289aqcq8a1no01fht.apps.googleusercontent.com";
-    const result = await Google.logInAsync({ clientId, scopes: ["profile", "email"] });
+    const result = await Google.logInAsync({ androidClientId, iosClientId, scopes: ["profile", "email"] });
     if (result.type === "success") {
       /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
       console.log(result.user);
+      
+      // Build Firebase credential with the Facebook access token.
+      const credential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
+
+      // Sign in with credential from the Facebook user.
+      firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
+        console.log('Experienced an auth error');
+        // Handle Errors here.
+      });
     }
   };
 

@@ -1,7 +1,7 @@
-import { registerUser } from "./Auth";
+import { loginUser } from "./Auth";
 
 export const Operations = {
-  registerUser
+  loginUser: loginUser
 };
 
 export type Operations = ReturnType<typeof Operations[keyof typeof Operations]>;
