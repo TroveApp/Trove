@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "strict": true,
     "strictNullChecks": true,
     "target": "es2017",
     "module": "commonjs",
     "isolatedModules": true,
-    "typeRoots": ["node_modules/@types"],
     "jsx": "react-native",
     "lib": ["es2017"],
     "experimentalDecorators": true,
@@ -26,6 +26,7 @@
     ]
   },
   "include": [
-    "src"
+    "src/**/*.ts",
+    "src/**/*.tsx",
   ]
 }

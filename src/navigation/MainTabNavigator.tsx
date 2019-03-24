@@ -7,6 +7,7 @@ import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import AddExperienceScreen from "../screens/AddExperienceScreen";
+import DebugScreen from "../screens/DebugScreen";
 
 const HomeStack = createStackNavigator(
   {
@@ -50,8 +51,20 @@ SettingsStack.navigationOptions = {
   )
 };
 
+const DebugStack = createStackNavigator({
+  Settings: DebugScreen
+});
+
+DebugStack.navigationOptions = {
+  tabBarLabel: "Debug",
+  tabBarIcon: ({ focused }: { focused: boolean }) => (
+    <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-bulb" : "md-bulb"} />
+  )
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
-  SettingsStack
+  SettingsStack,
+  DebugStack
 });
