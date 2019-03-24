@@ -2,6 +2,7 @@ import React from "react";
 import {Platform, StatusBar, StyleSheet, View} from "react-native";
 // @ts-ignore: Expo types are old and don't have icon.
 import {AppLoading, Asset, Font, Icon} from "expo";
+import { Ionicons } from '@expo/vector-icons';
 import AppNavigator from "./navigation/AppNavigator";
 import { store } from './redux/Store';
 import { Provider } from 'react-redux';
@@ -55,6 +56,11 @@ export default class App extends React.Component<AppProps> {
         "montserrat-medium": require("../assets/fonts/Montserrat-Medium.ttf"),
         "montserrat-semibold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
       }),
+      Font.loadAsync({
+        'Roboto': require('native-base/Fonts/Roboto.ttf'),
+        'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+        ...Ionicons.font,
+      })
     ]);
   };
 

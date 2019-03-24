@@ -18,6 +18,16 @@
     "downlevelIteration": true,
     "noEmitHelpers": true,
     "importHelpers": true,
+
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "alwaysStrict": true,
+
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+
     "plugins": [
       {
         "name": "typescript-tslint-plugin",

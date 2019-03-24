@@ -1,9 +1,14 @@
 import React from "react";
-import {Text, View, TextInput, Button} from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  Button,
+} from "react-native";
 
-import {registerUser} from "../redux/operations/Auth";
-import {Dispatcher} from "../redux/Store";
-import {connect} from "react-redux";
+import { loginUser } from "../redux/operations/Auth";
+import { Dispatcher } from "../redux/Store";
+import { connect } from "react-redux";
 
 interface OwnProps {}
 
@@ -22,9 +27,9 @@ class SignUpFormBase extends React.Component<SignupProps, SignUpState> {
     this.props.registerUser(this.state.emailAddress, this.state.nickname);
   };
 
-  updateEmail = (text: string) => this.setState({emailAddress: text});
+  updateEmail = (text: string) => this.setState({ emailAddress: text });
 
-  updateNickname = (text: string) => this.setState({nickname: text});
+  updateNickname = (text: string) => this.setState({ nickname: text });
 
   render() {
     return (
@@ -40,11 +45,11 @@ class SignUpFormBase extends React.Component<SignupProps, SignUpState> {
 
 const mapDispatchToProps = (dispatch: Dispatcher) => ({
   registerUser: (emailAddress: string, nickname: string) => {
-    dispatch(registerUser({emailAddress, nickname, userId: `${Math.floor(Math.random() * 1000000)}`}));
-  },
+    dispatch(loginUser({ emailAddress, nickname, userId: `${Math.floor(Math.random() * 1000000)}` }));
+  }
 });
 
 export const SignupForm = connect(
   undefined,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(SignUpFormBase);
