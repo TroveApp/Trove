@@ -4,8 +4,9 @@ import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState} from "../redux/Store";
-import {CURRENT_USER_ID, Experience, resolveResourceImageURL, Resource} from "../redux/reducers/Core";
+import {Experience, resolveResourceImageURL, Resource} from "../redux/reducers/Core";
 import Colors from "../constants/Colors";
+import {withLoggedInUser} from "../redux/reducers/Self";
 
 interface State {
   nickname?: string;
@@ -38,18 +39,19 @@ class ProfileScreen extends React.Component<
   }
 
   private renderExperiences() {
-    return (
-      <View style={styles.experiences}>
-        {this.props.core.users[CURRENT_USER_ID].experiences.map((experience, i) => {
+    return withLoggedInUser(this.props.self, self => (
+      <>
+        {self.myProfile.experiences.map((experience, i) => {
           const resource = this.props.core.resources[experience.resourceId];
           if (resource) {
             return this.renderExperienceCard(i, experience, resource);
           } else {
             console.log(`Resource not found! ${experience.resourceId}`);
-          }
+            return null;
+          }1
         })}
-      </View>
-    );
+      </>
+    ));
   }
 
   render() {
@@ -61,7 +63,7 @@ class ProfileScreen extends React.Component<
             <Text style={styles.name}>Sailboat 5</Text>
             <Text style={styles.location}>San Francisco, CA</Text>
           </View>
-          {this.renderExperiences()}
+          <View style={styles.experiences}>{this.renderExperiences()}</View>
         </ScrollView>
       </View>
     );

@@ -54,9 +54,6 @@ export function resolveResourceImageURL(name: string): ImageRequireSource | null
   return null;
 }
 
-// Hack until we store the current user in a better way.
-export const CURRENT_USER_ID = "currentUser";
-
 function getInitialState(): CoreState {
   return {
     users: {

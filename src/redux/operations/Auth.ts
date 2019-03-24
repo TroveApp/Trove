@@ -3,7 +3,8 @@ import {GetState, ReducerAction} from "../Store";
 import {Dispatch} from "redux";
 import {selfAction, withLoggedInUser} from "../reducers/Self";
 import {FirebaseUser, OnboardingState} from "../../firebase/FirebaseUser";
-import { FirebaseUserProfile } from '../../firebase/FirebaseUserProfile';
+import {FirebaseUserProfile} from "../../firebase/FirebaseUserProfile";
+import {Experience} from "../reducers/Core";
 
 export interface RegistrationAction {
   uid: string;
@@ -32,19 +33,19 @@ export function loginUser(user: User) {
           },
         );
 
-        await database()
+      await database()
         .ref(`userProfiles/${user.uid}`)
         .transaction(
           (currentValue: Partial<FirebaseUserProfile> | null): Partial<FirebaseUserProfile> => {
-            const {
-              topResources = [],
-            } = currentValue || {};
+            const {topResources = [], experiences = [], nickname = null} = currentValue || {};
 
             return {
-              topResources
-            }
-          }
-        )
+              nickname,
+              topResources,
+              experiences,
+            };
+          },
+        );
     } catch (err) {
       console.log("ERROR! DANGER WILL ROBINSON");
       console.log(err);
@@ -55,10 +56,30 @@ export function loginUser(user: User) {
       .ref(`users/${user.uid}`)
       .once("value")).val();
 
-    const { topResources, ...restProfile }: FirebaseUserProfile = (await database()
-      .ref(`userProfiles/${user.uid}`)
-      .once("value")).val() || {};
+    const {topResources, experiences: experienceIds = [], ...restProfile}: FirebaseUserProfile =
+      (await database()
+        .ref(`userProfiles/${user.uid}`)
+        .once("value")).val() || {};
 
+    console.log("Rest of profile is: ");
+    console.log(restProfile);
+
+    const experiences: Experience[] = [];
+    try {
+      await Promise.all(
+        experienceIds.map(expid =>
+          database()
+            .ref(`userExperiences/entries/${expid}`)
+            .once("value", snapshot => experiences.push(snapshot.val() as Experience)),
+        ),
+      );
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+
+    console.log("Experiences are:");
+    console.log(experiences);
     dispatch(
       selfAction.login({
         uid: user.uid,
@@ -66,8 +87,7 @@ export function loginUser(user: User) {
         myProfile: {
           // TODO:
           ...restProfile,
-
-          experiences: [],
+          experiences,
           topResources: {},
         },
       }),

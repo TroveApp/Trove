@@ -10,12 +10,25 @@ export function addExperience(experience: Experience) {
     const appState = getState();
 
     await withLoggedInUser(appState.self, async ({uid}) => {
-      await database()
+      const experienceRef = await database()
         .ref(`userExperiences/entries`)
         .push(<Experience>{
           uid,
           ...experience,
         });
+
+      const key = experienceRef.key;
+      if (key) {
+        await database()
+          .ref(`userProfiles/${uid}/experiences`)
+          .transaction(
+            (currentValue: string[] | null): string[] => {
+              const experienceIds = currentValue || [];
+
+              return [...experienceIds, key];
+            },
+          );
+      }
 
       dispatch(coreAction.addExperience({uid, innerPayload: experience}));
       dispatch(selfAction.addExperienceToProfile(experience));
