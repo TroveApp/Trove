@@ -1,7 +1,8 @@
 import React from "react";
-import { Platform } from "react-native";
+import { Image, Platform, Text } from "react-native";
 import { createStackNavigator, createBottomTabNavigator } from "react-navigation";
 
+import Colors from "../constants/Colors";
 import TabBarIcon from "../components/TabBarIcon";
 import ProfileScreen from "../screens/ProfileScreen";
 import DiscoverScreen from "../screens/DiscoverScreen";
@@ -17,15 +18,21 @@ const ProfileStack = createStackNavigator(
 );
 
 ProfileStack.navigationOptions = {
-  tabBarLabel: "Profile",
-  tabBarIcon: ({ focused }: { focused: boolean }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === "ios" ? `ios-information-circle${focused ? "" : "-outline"}` : "md-information-circle"
-      }
-    />
-  )
+  tabBarLabel: ({ focused }: { focused: boolean }) => (
+    <Text style={{ color: focused ? Colors.green : Colors.gray, fontSize: 12 }}>PROFILE</Text>
+  ),
+  tabBarIcon: ({ focused }: { focused: boolean }) =>
+    focused ? (
+      <Image
+        style={{ marginTop: 4, width: 26, height: 26 }}
+        source={require("../../assets/images/Profile_Selected.png")}
+      />
+    ) : (
+      <Image
+        style={{ marginTop: 4, width: 26, height: 26 }}
+        source={require("../../assets/images/Profile_Normal.png")}
+      />
+    )
 };
 
 const AddActivityStack = createStackNavigator({
@@ -35,7 +42,7 @@ const AddActivityStack = createStackNavigator({
 AddActivityStack.navigationOptions = {
   tabBarLabel: " ",
   tabBarIcon: ({ focused }: { focused: boolean }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-link" : "md-link"} />
+    <Image style={{ marginTop: 12, width: 36, height: 36 }} source={require("../../assets/images/Add.png")} />
   ),
   tabBarVisible: false
 };
@@ -45,10 +52,21 @@ const DiscoverStack = createStackNavigator({
 });
 
 DiscoverStack.navigationOptions = {
-  tabBarLabel: "Discover",
-  tabBarIcon: ({ focused }: { focused: boolean }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-options" : "md-options"} />
-  )
+  tabBarLabel: ({ focused }: { focused: boolean }) => (
+    <Text style={{ color: focused ? Colors.green : Colors.gray, fontSize: 12 }}>DISCOVER</Text>
+  ),
+  tabBarIcon: ({ focused }: { focused: boolean }) =>
+    focused ? (
+      <Image
+        style={{ marginTop: 4, width: 26, height: 26 }}
+        source={require("../../assets/images/Discover_Selected.png")}
+      />
+    ) : (
+      <Image
+        style={{ marginTop: 4, width: 26, height: 26 }}
+        source={require("../../assets/images/Discover_Normal.png")}
+      />
+    )
 };
 
 const DebugStack = createStackNavigator({
