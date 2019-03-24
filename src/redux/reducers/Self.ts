@@ -1,35 +1,40 @@
 import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
-import {Action} from "redux";
 import {produce} from "immer";
+import {FirebaseUser, OnboardingState} from "../../firebase/FirebaseUser";
 
 export enum LoginState {
+  Unknown,
   LoggedOut,
   LoggedIn,
 }
 
-export interface LoggedInSelf {
+export interface LoggedInSelf extends FirebaseUser {
   loginState: LoginState.LoggedIn;
-  uid: string;
-  emailAddress: string | null;
-  nickname: string | null;
 }
 
 export type LoggedOutSelf = {
   loginState: LoginState.LoggedOut;
 };
 
-export type Self = LoggedInSelf | LoggedOutSelf;
+export type UnknownLoginState = {
+  loginState: LoginState.Unknown;
+};
+
+export type Self = UnknownLoginState | LoggedInSelf | LoggedOutSelf;
 
 function getInitialState(): Self {
   return {
-    loginState: LoginState.LoggedOut,
+    loginState: LoginState.Unknown,
   };
 }
+
+export type LoginProps = Pick<LoggedInSelf, Exclude<keyof LoggedInSelf, "loginState">>;
 
 export const selfAction = actionFactory(
   {
     logout: simpleAction(),
-    login: payloadAction<{ uid: string, emailAddress: string | null, nickname: string | null }>()
+    login: payloadAction<LoginProps>(),
+    setOnboardingState: payloadAction<OnboardingState>(),
   },
   "self",
 );
@@ -44,15 +49,19 @@ export default (state = getInitialState(), action: SelfAction): Self =>
         switch (action.type) {
           case "logout":
             return {
-              loginState: LoginState.LoggedOut
+              loginState: LoginState.LoggedOut,
             };
           case "login":
             return {
               loginState: LoginState.LoggedIn,
-              ...action.payload
+              ...action.payload,
             };
-          default:
-            return;
+          case "setOnboardingState":
+            if (draft.loginState !== LoginState.LoggedIn) {
+              break;
+            }
+            draft.onboardingState = action.payload;
+            break;
         }
       }
     },

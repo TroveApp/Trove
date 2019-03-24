@@ -1,7 +1,6 @@
 import React from "react";
 import {ScrollView, StyleSheet, Text, View} from "react-native";
 
-import {loadUser} from "../../util/FirebaseClient";
 import {NavigationScreenProps} from "react-navigation";
 import {connect} from "react-redux";
 import {AppState} from "../redux/Store";

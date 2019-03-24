@@ -1,7 +1,6 @@
 import React from "react";
 import {ScrollView, StyleSheet, Text, View} from "react-native";
 
-import {SignupForm} from "../components/SignUp";
 import {AppState} from "../redux/Store";
 import {connect} from "react-redux";
 import {LoginState} from "../redux/reducers/Self";
@@ -37,7 +36,6 @@ class DebugScreen extends React.Component<Props, OwnState> {
           <Text>{`Current log in state is: ${this.props.loggedIn ? "Logged In" : "Logged Out"}`}</Text>
           <View style={styles.welcomeContainer}>
             <View style={{backgroundColor: "#EEE", margin: 10, width: "100%"}}>
-              <SignupForm />
             </View>
           </View>
         </ScrollView>

@@ -1,7 +1,8 @@
-import { loginUser } from "./Auth";
+import { loginUser, updateOnboardingState } from "./Auth";
 
 export const Operations = {
-  loginUser
+  loginUser,
+  updateOnboardingState,
 };
 
 export type Operations = ReturnType<typeof Operations[keyof typeof Operations]>;

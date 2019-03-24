@@ -1,11 +1,22 @@
-import React from "react";
-import {Platform, StatusBar, StyleSheet, View} from "react-native";
+// @ts-ignore: Expo types are old and don't have icon.
+import {Ionicons} from "@expo/vector-icons";
 // @ts-ignore: Expo types are old and don't have icon.
 import {AppLoading, Asset, Font, Icon} from "expo";
-import { Ionicons } from '@expo/vector-icons';
+import firebase from "firebase";
+import React from "react";
+import {Platform, StatusBar, StyleSheet, View} from "react-native";
+import {Provider} from "react-redux";
 import AppNavigator from "./navigation/AppNavigator";
-import { store } from './redux/Store';
-import { Provider } from 'react-redux';
+import {Operations} from "./redux/operations";
+import {selfAction} from "./redux/reducers/Self";
+import {globalDispatch, store} from "./redux/Store";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCixuF9r0M04ExKHr7xV4lxyP1eqmPh83w",
+  authDomain: "trove-backend.firebaseapp.com",
+  databaseURL: "https://trove-backend.firebaseio.com/",
+  storageBucket: "trove-backend.appspot.com",
+};
 
 declare global {
   interface ServiceWorkerRegistration {}
@@ -19,6 +30,22 @@ export default class App extends React.Component<AppProps> {
   state = {
     isLoadingComplete: false,
   };
+
+  componentDidMount() {
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged(async user => {
+      // console.log('Auth state changed, user is:');
+      // console.log(user);
+
+      if (user === null) {
+        globalDispatch(selfAction.logout());
+        return;
+      }
+
+      globalDispatch(Operations.loginUser(user));
+    });
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -57,10 +84,10 @@ export default class App extends React.Component<AppProps> {
         "montserrat-semibold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
       }),
       Font.loadAsync({
-        'Roboto': require('native-base/Fonts/Roboto.ttf'),
-        'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+        Roboto: require("native-base/Fonts/Roboto.ttf"),
+        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
         ...Ionicons.font,
-      })
+      }),
     ]);
   };
 

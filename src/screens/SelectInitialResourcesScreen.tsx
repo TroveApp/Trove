@@ -1,8 +1,28 @@
 import React from "react";
 import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
+import {OnboardingState} from "../firebase/FirebaseUser";
+import {Operations} from "../redux/operations";
+import {Dispatcher} from "../redux/Store";
+import { connect } from 'react-redux';
 
-export default class SelectInitialResourcesScreen extends React.Component<NavigationScreenProps> {
+export interface OwnProps extends NavigationScreenProps {}
+
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+
+export interface Props extends OwnProps, DispatchProps {}
+
+function mapDispatchToProps(dispatch: Dispatcher, props: OwnProps) {
+  return {
+    continueOnboarding() {
+      dispatch(Operations.updateOnboardingState(OnboardingState.Complete));
+
+      props.navigation.navigate("Profile");
+    },
+  };
+}
+
+export class SelectInitialResourcesScreen extends React.Component<Props> {
   static navigationOptions = {
     header: null,
   };
@@ -15,7 +35,7 @@ export default class SelectInitialResourcesScreen extends React.Component<Naviga
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Text>Select initial resources</Text>
-            <Button title="Next" onPress={() => this.props.navigation.navigate("Profile")} />
+            <Button title="Next" onPress={this.props.continueOnboarding} />
           </View>
         </ScrollView>
       </View>
@@ -91,3 +111,5 @@ const styles = StyleSheet.create({
     color: "#2e78b7",
   },
 });
+
+export default connect(undefined, mapDispatchToProps)(SelectInitialResourcesScreen);

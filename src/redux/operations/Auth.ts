@@ -1,37 +1,71 @@
-import {database} from "firebase";
+import {database, User} from "firebase";
 import {GetState, ReducerAction} from "../Store";
 import {Dispatch} from "redux";
-import {selfAction, LoggedInSelf} from "../reducers/Self";
+import {selfAction, LoginState} from "../reducers/Self";
+import {FirebaseUser, OnboardingState} from "../../firebase/FirebaseUser";
 
 export interface RegistrationAction {
   uid: string;
-  emailAddress: string | null;
-  nickname: string | null;
+  user: User;
 }
 
-export function loginUser({ uid, ...rest }: RegistrationAction) {
-  return async (dispatch: Dispatch<ReducerAction>, _getState: GetState) => {
-    console.log({ userId: uid, ...rest });
-
+export function loginUser(user: User) {
+  return async (dispatch: Dispatch<ReducerAction>) => {
     try {
+      // Push an empty update to check the user is authorized.
       await database()
-        .ref(`users/${uid}`)
-        .set({
-          ...rest
-        });
+        .ref(`users/${user.uid}`)
+        .transaction(
+          (currentValue: Partial<FirebaseUser> | null): Partial<FirebaseUser> => {
+            const {
+              onboardingState = OnboardingState.AtWelcome,
+              // TODO, SECURITY: validate on Firebase side that this email is okay,
+              // this is untrusted client-side input.
+              emailAddress = user.email || null,
+            } = currentValue || {};
 
+            return {
+              onboardingState,
+              emailAddress,
+            };
+          },
+        );
     } catch (err) {
+      console.log("ERROR! DANGER WILL ROBINSON");
       console.log(err);
+      dispatch(selfAction.logout());
     }
 
-    const user: LoggedInSelf = (await database()
-      .ref(`users/${uid}`)
+    const firebaseUser: FirebaseUser = (await database()
+      .ref(`users/${user.uid}`)
       .once("value")).val();
 
     dispatch(
       selfAction.login({
-        ...user,
+        uid: user.uid,
+        ...firebaseUser,
       }),
     );
+  };
+}
+
+export function updateOnboardingState(onboardingState: OnboardingState) {
+  return async (dispatch: Dispatch<ReducerAction>, getState: GetState) => {
+    const {self} = getState();
+
+    console.log('Attempting to update onboarding state, what is self?');
+    console.log(self);
+
+    if (self.loginState !== LoginState.LoggedIn) {
+      return;
+    }
+
+    await database()
+      .ref(`users/${self.uid}`)
+      .update(<FirebaseUser>{
+        onboardingState,
+      });
+
+    dispatch(selfAction.setOnboardingState(onboardingState));
   };
 }

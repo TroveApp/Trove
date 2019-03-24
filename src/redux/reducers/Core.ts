@@ -1,5 +1,4 @@
-import {simpleAction, payloadAction, ActionUnion, actionFactory} from "reductser";
-import {Action} from "redux";
+import {payloadAction, ActionUnion, actionFactory} from "reductser";
 import {produce} from "immer";
 import {ImageRequireSource} from "react-native";
 
@@ -72,7 +71,7 @@ export type CoreAction = ActionUnion<typeof coreAction>;
 export default (state = getInitialState(), action: CoreAction): CoreState =>
   produce(
     state,
-    (draft): CoreState | undefined => {
+    (_draft): CoreState | undefined => {
       if (action.reducer === "users") {
         switch (action.type) {
           case "addExperience":
