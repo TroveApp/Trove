@@ -1,22 +1,76 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button, Picker, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { NavigationScreenProps } from "react-navigation";
+import { connect } from "react-redux";
+import { AppState, Dispatcher } from "../redux/Store";
+import { coreAction } from "../redux/reducers/Core";
 
-export default class HomeScreen extends React.Component {
+interface HomeScreenProps {}
+
+interface State {
+  resourceId: string | null;
+  rating: string;
+  notes: string;
+}
+
+function mapStateToProps(state: AppState) {
+  return state.core;
+}
+
+const mapDispatchToProps = (dispatch: Dispatcher) => ({
+  onAddExperience: (resourceId: string, rating: string, notes: string) => {
+    dispatch(coreAction.addExperience({ resourceId, rating, notes }));
+  }
+});
+
+class AddExperienceScreen extends React.Component<
+  NavigationScreenProps &
+    HomeScreenProps &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>,
+  State
+> {
   static navigationOptions = {
     header: null
   };
 
-  state = {};
+  state = {
+    resourceId: null,
+    rating: "",
+    notes: ""
+  };
+
+  handleDone = () => {
+    this.props.onAddExperience(this.state.resourceId!, this.state.rating, this.state.notes);
+    this.props.navigation.pop();
+  };
 
   render() {
-    console.log(this.state);
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Text>Resource</Text>
-            <Text>Did it work?</Text>
+            <Picker
+              selectedValue={this.state.resourceId}
+              style={{ height: 50, width: 200 }}
+              onValueChange={itemValue => this.setState({ resourceId: itemValue })}
+            >
+              {Object.entries(this.props.resources).map(([resourceId, resource]) => (
+                <Picker.Item label={resource.name} value={resourceId} />
+              ))}
+            </Picker>
+            <Text style={{ marginTop: 200 }}>Did it work?</Text>
+            <TextInput
+              style={{ height: 50, width: 200, backgroundColor: "#fff" }}
+              onChangeText={rating => this.setState({ rating })}
+            />
             <Text>Notes</Text>
+            <TextInput
+              style={{ height: 50, width: 200, backgroundColor: "#fff" }}
+              onChangeText={notes => this.setState({ notes })}
+            />
+            <Button title="Done" onPress={this.handleDone} />
           </View>
         </ScrollView>
       </View>
@@ -27,7 +81,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#eee"
   },
   developmentModeText: {
     marginBottom: 20,
@@ -92,3 +146,8 @@ const styles = StyleSheet.create({
     color: "#2e78b7"
   }
 });
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddExperienceScreen);

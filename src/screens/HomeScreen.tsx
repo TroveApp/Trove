@@ -1,15 +1,22 @@
 import React from "react";
-import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
+import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { loadUser } from "../../util/FirebaseClient";
-import {NavigationScreenProps} from "react-navigation";
+import { NavigationScreenProps } from "react-navigation";
+import { connect } from "react-redux";
+import { AppState } from "../redux/Store";
+import { CURRENT_USER_ID } from "../redux/reducers/Core";
 
 interface State {
   nickname?: string;
   age?: number;
 }
 
-export default class HomeScreen extends React.Component<NavigationScreenProps, State> {
+function mapStateToProps(state: AppState) {
+  return state;
+}
+
+class HomeScreen extends React.Component<NavigationScreenProps & ReturnType<typeof mapStateToProps>, State> {
   static navigationOptions = {
     header: null
   };
@@ -26,9 +33,24 @@ export default class HomeScreen extends React.Component<NavigationScreenProps, S
     console.log("Finished setting state");
   }
 
+  private renderExperiences() {
+    return (
+      <View>
+        {this.props.core.users[CURRENT_USER_ID].experiences.map(experience => {
+          const resource = this.props.core.resources[experience.resourceId];
+          return (
+            <View>
+              <Text>{resource.name}</Text>
+              <Text>{experience.rating}</Text>
+              <Text>{experience.notes}</Text>
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
+
   render() {
-    console.log("Called render!");
-    console.log(this.state);
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -36,10 +58,8 @@ export default class HomeScreen extends React.Component<NavigationScreenProps, S
             <Text>About you</Text>
             <Text>Nickname: {this.state.nickname || ""}</Text>
             <Text>Age: {this.state.age || ""}</Text>
-            <Button
-              title="Add activity"
-              onPress={() => this.props.navigation.navigate('AddExperience')}
-            />
+            {this.renderExperiences()}
+            <Button title="Add experience" onPress={() => this.props.navigation.navigate("AddExperience")} />
           </View>
         </ScrollView>
       </View>
@@ -115,3 +135,5 @@ const styles = StyleSheet.create({
     color: "#2e78b7"
   }
 });
+
+export default connect(mapStateToProps)(HomeScreen);

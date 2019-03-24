@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View, TextInput, Button, NativeSyntheticEvent, TextInputChangeEventData } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { loadUser } from "../../util/FirebaseClient";
 import { SignupForm } from '../components/SignUp';
